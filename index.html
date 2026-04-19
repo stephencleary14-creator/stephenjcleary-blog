@@ -1255,6 +1255,9 @@
       overlay.classList.add('open');
       overlay.scrollTop = 0;
       document.body.style.overflow = 'hidden';
+      setTimeout(() => {
+        document.querySelectorAll('.slideshow').forEach(el => slideshowInit(el.id));
+      }, 50);
     }
 
     function closeEntry() {
@@ -1299,15 +1302,6 @@
 
     function slideshowNext(id) { slideshowGo(id, 1); }
     function slideshowPrev(id) { slideshowGo(id, -1); }
-
-    // Init slideshows when entry opens
-    const _origOpenEntry = openEntry;
-    function openEntry(index) {
-      _origOpenEntry(index);
-      setTimeout(() => {
-        document.querySelectorAll('.slideshow').forEach(el => slideshowInit(el.id));
-      }, 50);
-    }
 
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
