@@ -343,6 +343,7 @@
       min-height: 280px;
       overflow: hidden;
       position: relative;
+      background: #1C1C1C;
     }
 
     .featured-image img {
@@ -350,6 +351,11 @@
       height: 100%;
       object-fit: cover;
       display: block;
+    }
+
+    .featured-image img.thumb-contain {
+      object-fit: contain;
+      background: #1C1C1C;
     }
 
     .featured-image .thumb-icon {
@@ -914,7 +920,7 @@
       <p class="section-label">Latest</p>
       <div class="card featured-card" onclick="openEntry(0)" id="featured-card">
         <div id="featured-thumb" class="featured-image">
-          <img src="images/claude_design_slide1.jpg" alt="Attention Tester deck title slide — made with Claude Design" />
+          <img src="images/claude_design_slide1.jpg" alt="Attention Tester deck title slide — made with Claude Design" class="thumb-contain" />
           <div class="thumb-icon"></div>
         </div>
         <div class="featured-body">
