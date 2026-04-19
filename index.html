@@ -571,6 +571,66 @@
       margin-top: 6px;
     }
 
+    /* ── Slideshow ── */
+    .slideshow {
+      margin: 28px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #1C1C1C;
+    }
+
+    .slideshow-track {
+      position: relative;
+    }
+
+    .slideshow-slide {
+      width: 100%;
+      display: none;
+      border-radius: 0;
+      margin: 0;
+    }
+
+    .slideshow-slide.active {
+      display: block;
+    }
+
+    .slideshow-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 12px 16px;
+      background: #1C1C1C;
+    }
+
+    .slideshow-btn {
+      background: none;
+      border: 1px solid rgba(237,224,196,0.3);
+      color: #EDE0C4;
+      border-radius: 4px;
+      width: 32px;
+      height: 32px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .slideshow-btn:hover {
+      border-color: #C8102E;
+      background: rgba(200,16,46,0.1);
+      color: #EDE0C4;
+    }
+
+    .slideshow-counter {
+      font-size: 13px;
+      color: rgba(237,224,196,0.5);
+      min-width: 40px;
+      text-align: center;
+    }
+
     /* ── Colour swatches ── */
     .swatch-row {
       display: flex;
@@ -854,13 +914,13 @@
       <p class="section-label">Latest</p>
       <div class="card featured-card" onclick="openEntry(0)" id="featured-card">
         <div id="featured-thumb" class="featured-image">
-          <img src="images/NathanScott.jpg" alt="Nathan and Haley Scott in couples therapy, One Tree Hill Season 5" />
+          <img src="images/claude_design_slide1.jpg" alt="Attention Tester deck title slide — made with Claude Design" />
           <div class="thumb-icon"></div>
         </div>
         <div class="featured-body">
-          <p class="card-meta">9 April 2026</p>
-          <h2 class="card-title">Why am I enjoying this so much?</h2>
-          <p class="card-excerpt">There's a moment in One Tree Hill where a therapist asks Nathan and Haley why they don't describe themselves the way they used to. A basketball player and a musician. Life got in the way. It stuck with me.</p>
+          <p class="card-meta">19 April 2026</p>
+          <h2 class="card-title">Making a deck with Claude Design</h2>
+          <p class="card-excerpt">Claude Design is a new feature that lets you build presentations directly inside Claude. I gave it a two-sentence brief, uploaded my style guide and the Attention Tester project, and watched it make an 8-slide how-to deck.</p>
           <a class="card-read" onclick="event.stopPropagation(); openEntry(0)">Read entry</a>
         </div>
       </div>
@@ -961,6 +1021,20 @@
         <line x1="103" y1="18" x2="103" y2="102" stroke="#C8102E" stroke-width="5" stroke-linecap="round"/>
         <path d="M103 18 Q118 28 118 50 Q118 62 103 65" stroke="#C8102E" stroke-width="4" fill="#C8102E" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>`,
+      claudeDesign: `<svg viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="160" height="120" fill="#EDE0C4"/>
+        <!-- Slide / canvas shape -->
+        <rect x="22" y="30" width="116" height="72" rx="6" fill="#C8102E"/>
+        <!-- Screen glare line -->
+        <rect x="30" y="38" width="100" height="56" rx="4" fill="#EDE0C4" opacity="0.12"/>
+        <!-- Title bar lines -->
+        <rect x="34" y="46" width="48" height="7" rx="3.5" fill="#EDE0C4"/>
+        <rect x="34" y="58" width="32" height="5" rx="2.5" fill="#EDE0C4" opacity="0.55"/>
+        <!-- Small image placeholder box -->
+        <rect x="88" y="44" width="36" height="28" rx="4" fill="#EDE0C4" opacity="0.25"/>
+        <!-- Red accent bar bottom -->
+        <rect x="22" y="94" width="116" height="4" rx="2" fill="#A00E24"/>
+      </svg>`,
       whyEnjoying: `<svg viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <rect width="160" height="120" fill="#EDE0C4"/>
         <!-- Bulb globe -->
@@ -974,6 +1048,41 @@
     };
 
     const entries = [
+      {
+        icon: icons.claudeDesign,
+        photo: 'images/claude_design_slide1.jpg',
+        photoAlt: 'Attention Tester deck title slide — made with Claude Design',
+        meta: '19 April 2026',
+        title: "Making a deck with Claude Design",
+        body: `
+          <p>Claude Design is a new feature that lets you create polished visual presentations directly inside Claude. I wanted to try it properly — not just a demo, but something I'd actually use.</p>
+          <p>The brief was simple: make a short how-to deck for the Attention Tester. Step by step, explain the features, include visuals of the tool. Here's the exact prompt I gave it:</p>
+          <blockquote style="border-left:3px solid var(--red);padding:12px 20px;margin:24px 0;color:var(--mid);font-style:italic;">"I want to make a short deck which explains how to use the Attention Tester tool. It should be a simple step by step which explains the features and benefits. Include visuals of the tool."</blockquote>
+          <p>I uploaded two things before writing the prompt: my stephenjcleary brand style guide, and the Attention Tester project folder. That's it. No further instruction on colours, layout, or structure.</p>
+          <p>What came back was an 8-slide deck. Dark opening and closing slides using my near-black background, red accent colour, and STEPHENJCLEARY wordmark. Step slides using the deep red left panel with cream text, and the actual tool UI on the right. The chart colours — dark bars, sand passive, red active — were pulled directly from the tool itself.</p>
+          <p>It got the brand right without being told to. The type hierarchy, the way the step numbers are labelled, the use of white space — all consistent with the style guide I'd uploaded.</p>
+          <div class="slideshow" id="slideshow-claudedesign">
+            <div class="slideshow-track">
+              <img src="images/claude_design_slide1.jpg" alt="Title slide: Attention Tester — Tool Guide" class="slideshow-slide" />
+              <img src="images/claude_design_slide2.jpg" alt="Overview: Three analyses, one upload — AI Headline, Attention Chart, DBA Check" class="slideshow-slide" />
+              <img src="images/claude_design_slide3.jpg" alt="Step 01: Upload your video" class="slideshow-slide" />
+              <img src="images/claude_design_slide4.jpg" alt="Step 02: Read the AI headline" class="slideshow-slide" />
+              <img src="images/claude_design_slide5.jpg" alt="Step 03: Read the attention chart" class="slideshow-slide" />
+              <img src="images/claude_design_slide6.jpg" alt="Step 04: Check your brand asset" class="slideshow-slide" />
+              <img src="images/claude_design_slide7.jpg" alt="Step 05: Compare by platform" class="slideshow-slide" />
+              <img src="images/claude_design_slide8.jpg" alt="Closing slide: Upload. Analyse. Improve." class="slideshow-slide" />
+            </div>
+            <div class="slideshow-controls">
+              <button class="slideshow-btn" onclick="slideshowPrev('slideshow-claudedesign')">&#8592;</button>
+              <span class="slideshow-counter" id="slideshow-claudedesign-counter">1 / 8</span>
+              <button class="slideshow-btn" onclick="slideshowNext('slideshow-claudedesign')">&#8594;</button>
+            </div>
+          </div>
+          <p>The thing that struck me most is how little friction there was. I didn't spend any time on layout decisions. I didn't fiddle with colours or fonts. I just described what I wanted and pointed it at the right context.</p>
+          <p>That's the pattern I keep coming back to with these tools. The less you have to think about the format, the more you can focus on whether the content is actually good. The deck structure — overview, then five numbered steps, then a closing slide — is clean and logical. Claude Design figured that out from a two-sentence brief.</p>
+          <p>Not every output will be this clean on the first pass. But this one was. Worth sharing.</p>
+        `
+      },
       {
         icon: icons.whyEnjoying,
         photo: 'images/NathanScott.jpg',
@@ -1163,6 +1272,41 @@
       if (e.target === document.getElementById('overlay')) {
         closeEntry();
       }
+    }
+
+    // Slideshow
+    const slideshowState = {};
+
+    function slideshowInit(id) {
+      const el = document.getElementById(id);
+      if (!el || slideshowState[id] !== undefined) return;
+      slideshowState[id] = 0;
+      const slides = el.querySelectorAll('.slideshow-slide');
+      slides.forEach((s, i) => s.classList.toggle('active', i === 0));
+    }
+
+    function slideshowGo(id, dir) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const slides = el.querySelectorAll('.slideshow-slide');
+      if (slideshowState[id] === undefined) slideshowState[id] = 0;
+      slides[slideshowState[id]].classList.remove('active');
+      slideshowState[id] = (slideshowState[id] + dir + slides.length) % slides.length;
+      slides[slideshowState[id]].classList.add('active');
+      const counter = document.getElementById(id + '-counter');
+      if (counter) counter.textContent = (slideshowState[id] + 1) + ' / ' + slides.length;
+    }
+
+    function slideshowNext(id) { slideshowGo(id, 1); }
+    function slideshowPrev(id) { slideshowGo(id, -1); }
+
+    // Init slideshows when entry opens
+    const _origOpenEntry = openEntry;
+    function openEntry(index) {
+      _origOpenEntry(index);
+      setTimeout(() => {
+        document.querySelectorAll('.slideshow').forEach(el => slideshowInit(el.id));
+      }, 50);
     }
 
     document.addEventListener('keydown', function(e) {
