@@ -920,13 +920,13 @@
       <p class="section-label">Latest</p>
       <div class="card featured-card" onclick="openEntry(0)" id="featured-card">
         <div id="featured-thumb" class="featured-image">
-          <img src="images/claude_design_slide1.jpg" alt="Attention Tester deck title slide — made with Claude Design" class="thumb-contain" />
+          <img src="images/Screenshot 2026-04-23 at 20.17.32.png" alt="Blog header in Outfit — the new font" class="thumb-contain" />
           <div class="thumb-icon"></div>
         </div>
         <div class="featured-body">
-          <p class="card-meta">19 April 2026</p>
-          <h2 class="card-title">Making a deck with Claude Design</h2>
-          <p class="card-excerpt">Claude Design is a new feature that lets you build presentations directly inside Claude. I gave it a two-sentence brief, uploaded my style guide and the Attention Tester project, and watched it make an 8-slide how-to deck.</p>
+          <p class="card-meta">23 April 2026</p>
+          <h2 class="card-title">Find a new font</h2>
+          <p class="card-excerpt">My brand was using Inter. Reliable, but too neutral. I briefed Claude to find something better — it built a full font explorer comparing seven alternatives, all rendered in my actual wordmark. Outfit won.</p>
           <a class="card-read" onclick="event.stopPropagation(); openEntry(0)">Read entry</a>
         </div>
       </div>
@@ -1027,6 +1027,12 @@
         <line x1="103" y1="18" x2="103" y2="102" stroke="#C8102E" stroke-width="5" stroke-linecap="round"/>
         <path d="M103 18 Q118 28 118 50 Q118 62 103 65" stroke="#C8102E" stroke-width="4" fill="#C8102E" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>`,
+      fontFind: `<svg viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="160" height="120" fill="#EDE0C4"/>
+        <text x="18" y="98" font-family="Georgia, serif" font-size="90" font-weight="700" fill="#C8102E">A</text>
+        <text x="96" y="74" font-family="Arial, sans-serif" font-size="46" font-weight="700" fill="#1C1C1C" opacity="0.65">a</text>
+        <rect x="18" y="102" width="124" height="4" rx="2" fill="#C8102E"/>
+      </svg>`,
       claudeDesign: `<svg viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <rect width="160" height="120" fill="#EDE0C4"/>
         <!-- Slide / canvas shape -->
@@ -1054,6 +1060,31 @@
     };
 
     const entries = [
+      {
+        icon: icons.fontFind,
+        photo: 'images/Screenshot 2026-04-23 at 20.17.32.png',
+        photoAlt: 'Blog header in Outfit — the new font',
+        meta: '23 April 2026',
+        title: "Find a new font",
+        body: `
+          <p>During my undergraduate degree in Multimedia Design I built websites regularly. One part of that was picking fonts — for logos, headings, body copy. It could take a while. You'd end up on dafont.com or Google Fonts, flicking through options, trying to picture how they'd look in context. Time consuming, a bit of a rabbit hole.</p>
+          <p>My personal brand was using Inter. It's a good font. Precise, clean, reliable. But the verdict from Claude's assessment was pretty direct: too neutral. Reads as default. The brand has more warmth and personality than Inter conveys.</p>
+          <p>So I briefed Claude to find me a new one.</p>
+          <p>What came back wasn't just a list of names — it was a full font explorer page. Seven alternatives, each rendered at multiple weights and sizes in my actual wordmark, across all three brand backgrounds: light, cream, and dark. Character notes. A verdict on how the red accent j sits in each one. All the information needed to make the call.</p>
+          <img src="images/Screenshot 2026-04-23 at 20.11.54.png" alt="Font comparison tool showing Inter and 7 alternatives rendered in the stephenjcleary wordmark" class="entry-img" />
+          <p>The alphabet comparison view was the most useful. It shows every font rendering the same string — "stephenjcleary" — so you can see exactly how each one handles the letters that actually matter in your name.</p>
+          <img src="images/Screenshot 2026-04-23 at 20.12.00.png" alt="Alphabet comparison showing all fonts side by side rendering stephenjcleary" class="entry-img" />
+          <p>Outfit was the one. Geometric with intentional warmth — 45° terminals and rounded joints make it feel friendly without being casual. The j in particular sits nicely in crimson: clean dot, rounded curve at the base. It feels part of the wordmark, not just a letter. The verdict: a strong middle ground — modern and approachable. Distinctive at large sizes.</p>
+          <img src="images/Screenshot 2026-04-23 at 20.12.14.png" alt="Outfit font close-up panel showing character, j treatment, and verdict" class="entry-img" />
+          <p>Once the decision was made, the style guide updated to Outfit across the board.</p>
+          <img src="images/Screenshot 2026-04-23 at 20.12.42.png" alt="Brand style guide updated with Outfit as the typeface" class="entry-img" />
+          <p>The before and after is visible most clearly in the blog header. Here's Inter:</p>
+          <img src="images/Screenshot 2026-04-23 at 20.17.04.png" alt="Blog header in Inter — the previous font" class="entry-img" />
+          <p>And here's Outfit:</p>
+          <img src="images/Screenshot 2026-04-23 at 20.17.32.png" alt="Blog header in Outfit — the new font" class="entry-img" />
+          <p>What used to take an hour of tab-switching took about ten minutes. Better output, less friction.</p>
+        `
+      },
       {
         icon: icons.claudeDesign,
         photo: 'images/claude_design_slide1.jpg',
