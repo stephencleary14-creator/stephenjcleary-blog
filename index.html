@@ -31,14 +31,16 @@
 
     /* ── Nav ── */
     nav {
-      background: var(--dark);
+      background: transparent;
       padding: 0 32px;
       display: flex;
       align-items: center;
       justify-content: flex-end;
       height: 56px;
-      position: sticky;
+      position: absolute;
       top: 0;
+      left: 0;
+      right: 0;
       z-index: 100;
     }
 
@@ -149,7 +151,7 @@
     /* ── Page Header ── */
     .page-header {
       background: var(--dark);
-      padding: 20px 32px 16px;
+      padding: 76px 32px 16px;
       border-bottom: 3px solid var(--red);
       position: relative;
       overflow: hidden;
@@ -260,7 +262,7 @@
     .hero-figure {
       position: absolute;
       right: calc(50% - 480px + 140px);
-      top: 8px;
+      top: 0;
       z-index: 10;
       pointer-events: none;
     }
