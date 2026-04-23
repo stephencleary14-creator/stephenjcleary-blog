@@ -221,9 +221,9 @@
     }
 
     .bio-strip-inner {
-      max-width: 960px;
+      max-width: 720px;
       margin: 0 auto;
-      padding: 14px 320px 16px 32px;
+      padding: 14px 32px 16px 32px;
       display: flex;
       align-items: center;
       gap: 24px;
@@ -234,6 +234,11 @@
       height: 52px;
       background: var(--cream);
       flex-shrink: 0;
+    }
+
+    .bio-text {
+      /* Stop text before it reaches the figurine */
+      max-width: 380px;
     }
 
     .bio-text p {
@@ -260,7 +265,8 @@
     /* ── Figurine ── */
     .hero-figure {
       position: absolute;
-      right: calc(50% - 480px + 80px);
+      /* Anchor to right edge of 720px container */
+      right: calc(50% - 360px);
       top: auto;
       bottom: -16px;
       z-index: 10;
