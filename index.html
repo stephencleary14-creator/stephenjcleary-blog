@@ -141,10 +141,15 @@
       text-align: center;
     }
 
+    /* ── Hero (header + bio share positioned wrapper) ── */
+    .hero {
+      position: relative;
+    }
+
     /* ── Page Header ── */
     .page-header {
       background: var(--dark);
-      padding: 32px 32px 28px;
+      padding: 20px 32px 16px;
       border-bottom: 3px solid var(--red);
       position: relative;
       overflow: hidden;
@@ -160,18 +165,18 @@
       pointer-events: none;
     }
 
-    /* Red glow behind "Progress" */
+    /* Red glow — right side */
     .page-header::after {
       content: '';
       position: absolute;
       top: 50%;
-      left: 62%;
+      left: 72%;
       transform: translate(-50%, -44%);
       width: 500px;
       height: 240px;
       background: radial-gradient(ellipse at center,
-        rgba(200,16,46,0.30) 0%,
-        rgba(200,16,46,0.12) 40%,
+        rgba(200,16,46,0.35) 0%,
+        rgba(200,16,46,0.14) 40%,
         transparent 70%
       );
       pointer-events: none;
@@ -181,6 +186,7 @@
       padding-bottom: 0;
       position: relative;
       z-index: 1;
+      padding-right: 220px;
     }
 
     .header-tag {
@@ -195,16 +201,78 @@
       text-transform: uppercase;
       padding: 5px 11px;
       border-radius: 4px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .page-title {
-      font-size: clamp(34px, 6vw, 58px);
+      font-size: clamp(28px, 5vw, 42px);
       font-weight: 700;
       color: var(--cream-light);
       letter-spacing: -0.02em;
       line-height: 1.1;
       text-shadow: 0 2px 14px rgba(0,0,0,0.45);
+    }
+
+    /* ── Bio strip ── */
+    .bio-strip {
+      position: relative;
+    }
+
+    .bio-strip-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 14px 220px 16px 32px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .bio-divider {
+      width: 1px;
+      height: 52px;
+      background: var(--cream);
+      flex-shrink: 0;
+    }
+
+    .bio-text p {
+      font-size: 13px;
+      color: var(--mid);
+      line-height: 1.6;
+      max-width: 480px;
+    }
+
+    .bio-linkedin {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--red);
+      text-decoration: none;
+      margin-top: 6px;
+      transition: color 0.15s;
+    }
+
+    .bio-linkedin:hover { color: var(--red-deep); }
+    .bio-linkedin::after { content: '→'; }
+
+    /* ── Figurine ── */
+    .hero-figure {
+      position: absolute;
+      right: calc(50% - 480px + 140px);
+      top: 8px;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .hero-figure img {
+      height: 260px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+      filter:
+        drop-shadow(0px 20px 12px rgba(0,0,0,0.35))
+        drop-shadow(0px 6px 4px rgba(0,0,0,0.2));
     }
 
     /* ── Layout ── */
@@ -885,18 +953,39 @@
     </div>
   </nav>
 
-  <!-- Page Header -->
-  <div class="page-header">
-    <div class="container">
-      <div class="header-tag">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-          <rect x="5" y="1" width="5" height="3" rx="1" fill="white" transform="rotate(45 5 1)"/>
-          <line x1="2" y1="10" x2="6.5" y2="5.5" stroke="white" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        Build Log
+  <!-- Hero: header + bio + figure -->
+  <div class="hero">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="container">
+        <div class="header-tag">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <rect x="5" y="1" width="5" height="3" rx="1" fill="white" transform="rotate(45 5 1)"/>
+            <line x1="2" y1="10" x2="6.5" y2="5.5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Build Log
+        </div>
+        <h1 class="page-title">stephen<span style="color:var(--red);">j</span>cleary</h1>
       </div>
-      <h1 class="page-title">stephen<span style="color:var(--red);">j</span>cleary</h1>
     </div>
+
+    <!-- Bio strip -->
+    <div class="bio-strip">
+      <div class="bio-strip-inner">
+        <div class="bio-divider"></div>
+        <div class="bio-text">
+          <p>Brand marketer with 13+ years experience. Global brand marketing at adidas Football, currently a brand manager at The National Lottery in Dublin. This blog is a record of what I'm building, learning, and figuring out along the way.</p>
+          <a class="bio-linkedin" href="https://www.linkedin.com/in/clearystephen/" target="_blank" rel="noopener">Connect on LinkedIn</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Figurine straddling the header/bio boundary -->
+    <div class="hero-figure">
+      <img src="images/ChatGPT_Image_Apr_23__2026__09_56_44_PM-removebg-preview.png" alt="Stephen Cleary Corinthian figurine" />
+    </div>
+
   </div>
 
   <!-- Main Content -->
