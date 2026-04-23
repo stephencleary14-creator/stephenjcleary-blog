@@ -262,7 +262,10 @@
     .hero-figure {
       position: absolute;
       right: calc(50% - 480px + 140px);
-      top: 0;
+      /* Header bottom ~142px from page top. Figure 260px tall.
+         Set bottom relative to hero so base sits ~40px into bio strip */
+      top: auto;
+      bottom: -40px;
       z-index: 10;
       pointer-events: none;
     }
