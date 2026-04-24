@@ -110,7 +110,7 @@
       background: var(--red);
     }
 
-    @media (hover: none) and (pointer: coarse) {
+    @media (hover: none), (pointer: coarse), (max-width: 900px) {
       #touch-controls { display: flex; }
     }
   </style>
@@ -230,6 +230,15 @@ function touchStart(btn, code) {
 touchStart(leftBtn,  'ArrowLeft');
 touchStart(rightBtn, 'ArrowRight');
 touchStart(kickBtn,  'Space');
+
+// Tap canvas to start/restart on touch devices
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  if (state === STATE.WAITING)        { state = STATE.PLAYING; }
+  else if (state === STATE.GAME_OVER) { initGame(); state = STATE.PLAYING; }
+}, { passive: false });
+
+const isTouchDevice = () => window.matchMedia('(hover: none), (pointer: coarse)').matches || navigator.maxTouchPoints > 0;
 
 // ─── Kick logic ───────────────────────────────────────────────────────────────
 let spaceWasDown = false;
@@ -404,7 +413,11 @@ function drawOverlay(title, sub1, sub2) {
 }
 
 function drawWaiting() {
-  drawOverlay('Keepy-uppies', 'Use ← → to move  •  Space to kick', 'Press space to start');
+  if (isTouchDevice()) {
+    drawOverlay('Keepy-uppies', 'Use ← → to move  •  Kick to kick', 'Tap screen to start');
+  } else {
+    drawOverlay('Keepy-uppies', 'Use ← → to move  •  Space to kick', 'Press space to start');
+  }
   // Draw idle player and ball at start position
   drawPlayer();
   drawBall();
