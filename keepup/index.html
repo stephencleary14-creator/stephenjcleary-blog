@@ -143,9 +143,9 @@ const imgs = {
   kick:  new Image(),
   ball:  new Image()
 };
-imgs.stand.src = 'images/SJC_stand.png';
-imgs.kick.src  = 'images/SJC_kick.png';
-imgs.ball.src  = 'images/football.png';
+imgs.stand.src = '/keepup/images/SJC_stand.png';
+imgs.kick.src  = '/keepup/images/SJC_kick.png';
+imgs.ball.src  = '/keepup/images/football.png';
 
 Promise.all(Object.values(imgs).map(img => new Promise(resolve => {
   img.onload = resolve;
