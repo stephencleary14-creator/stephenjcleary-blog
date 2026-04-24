@@ -934,7 +934,7 @@
       }
 
       .container {
-        padding: 0 20px 60px;
+        padding: 0 20px 0;
       }
 
       nav {
@@ -946,7 +946,7 @@
       }
 
       .page-header .container {
-        padding-right: 20px;
+        padding-right: 140px;
       }
 
       .bio-strip-inner {
@@ -959,9 +959,17 @@
         font-size: 15px;
       }
 
-      /* Hide figure on mobile — too cramped */
+      /* Shrink figure on mobile — sit in top-right of header */
       .hero-figure {
-        display: none;
+        position: absolute;
+        right: 16px;
+        bottom: 0;
+        top: auto;
+        z-index: 10;
+      }
+
+      .hero-figure img {
+        height: 120px;
       }
 
       .page-subtitle {
@@ -979,6 +987,10 @@
 
       .entry-close {
         margin: 0 24px 24px;
+      }
+
+      footer {
+        padding: 16px 20px 32px;
       }
     }
 
