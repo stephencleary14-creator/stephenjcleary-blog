@@ -147,18 +147,10 @@ imgs.stand.src = 'images/SJC_stand.png';
 imgs.kick.src  = 'images/SJC_kick.png';
 imgs.ball.src  = 'images/football.png';
 
-let imgsLoaded = 0;
-const TOTAL_IMGS = 3;
-Object.values(imgs).forEach(img => {
-  img.onload = () => {
-    imgsLoaded++;
-    if (imgsLoaded === TOTAL_IMGS) ready();
-  };
-  img.onerror = () => {
-    imgsLoaded++; // allow game to start even if an image fails
-    if (imgsLoaded === TOTAL_IMGS) ready();
-  };
-});
+Promise.all(Object.values(imgs).map(img => new Promise(resolve => {
+  img.onload = resolve;
+  img.onerror = resolve; // still start if one fails
+}))).then(ready);
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const GRAVITY    = 0.35;
@@ -461,13 +453,6 @@ function ready() {
   requestAnimationFrame(loop);
 }
 
-// Safety: start anyway after 2s even if images stall
-setTimeout(() => {
-  if (imgsLoaded < TOTAL_IMGS) {
-    imgsLoaded = TOTAL_IMGS;
-    ready();
-  }
-}, 2000);
 </script>
 </body>
 </html>
