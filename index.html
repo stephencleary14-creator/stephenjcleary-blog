@@ -1104,9 +1104,9 @@
           <div class="thumb-icon"></div>
         </div>
         <div class="featured-body">
-          <p class="card-meta">24 April 2026</p>
-          <h2 class="card-title">I made a brand mascot</h2>
-          <p class="card-excerpt">I have spent a lot of time thinking about Distinctive Brand Assets. I follow Jenni Romaniuk's work closely. So when I started my personal brand, I wanted one of my own.</p>
+          <p class="card-meta" id="featured-meta"></p>
+          <h2 class="card-title" id="featured-title"></h2>
+          <p class="card-excerpt" id="featured-excerpt"></p>
           <a class="card-read" onclick="event.stopPropagation(); openEntry(0)">Read entry</a>
         </div>
       </div>
@@ -1575,8 +1575,15 @@
       }
     });
 
-    // ── Featured card icon (mobile only — injected into .thumb-icon) ──
-    document.querySelector('#featured-thumb .thumb-icon').innerHTML = entries[0].icon;
+    // ── Featured card — populate dynamically from entries[0] ──
+    const featured = entries[0];
+    const featuredExcerpt = featured.body.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160) + '…';
+    document.getElementById('featured-meta').textContent = featured.meta;
+    document.getElementById('featured-title').textContent = featured.title;
+    document.getElementById('featured-excerpt').textContent = featuredExcerpt;
+    document.querySelector('#featured-thumb img').src = featured.photo;
+    document.querySelector('#featured-thumb img').alt = featured.photoAlt || '';
+    document.querySelector('#featured-thumb .thumb-icon').innerHTML = featured.icon;
 
     // ── Archive Grid ──
     function renderArchiveGrid() {
