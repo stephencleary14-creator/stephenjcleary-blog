@@ -1291,6 +1291,7 @@
         icon: icons.fontFind,
         photo: 'images/thumb_font.png',
         photoAlt: 'Blog header in Outfit — the new font',
+        photoPosition: 'left center',
         meta: '23 April 2026',
         title: "Finding a new font",
         body: `
@@ -1586,7 +1587,7 @@
         const entry = entries[i];
         const excerpt = entry.body.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 120) + '…';
         const photo = entry.photo
-          ? `<img src="${entry.photo}" alt="${entry.photoAlt || ''}" />`
+          ? `<img src="${entry.photo}" alt="${entry.photoAlt || ''}" style="object-position: ${entry.photoPosition || 'center center'}" />`
           : '';
         return `
           <div class="card archive-card" onclick="openEntry(${i})">
