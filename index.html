@@ -191,6 +191,10 @@
       padding-right: 220px;
     }
 
+    .header-figurine-mobile {
+      display: none;
+    }
+
     .header-tag {
       display: inline-flex;
       align-items: center;
@@ -959,9 +963,30 @@
         font-size: 15px;
       }
 
-      /* Hide figure on mobile — too cramped */
+      /* Hide desktop figurine on mobile */
       .hero-figure {
         display: none;
+      }
+
+      /* Show inline figurine in header on mobile */
+      .page-header .container {
+        padding-right: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .header-figurine-mobile {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+      }
+
+      .header-figurine-mobile img {
+        height: 90px;
+        width: auto;
+        filter: none;
       }
 
       .page-subtitle {
@@ -1009,14 +1034,19 @@
     <!-- Page Header -->
     <div class="page-header">
       <div class="container">
-        <div class="header-tag">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-            <rect x="5" y="1" width="5" height="3" rx="1" fill="white" transform="rotate(45 5 1)"/>
-            <line x1="2" y1="10" x2="6.5" y2="5.5" stroke="white" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          Build Log
+        <div class="header-text">
+          <div class="header-tag">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <rect x="5" y="1" width="5" height="3" rx="1" fill="white" transform="rotate(45 5 1)"/>
+              <line x1="2" y1="10" x2="6.5" y2="5.5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Build Log
+          </div>
+          <h1 class="page-title">stephen<span style="color:var(--red);">j</span>cleary</h1>
         </div>
-        <h1 class="page-title">stephen<span style="color:var(--red);">j</span>cleary</h1>
+        <div class="header-figurine-mobile">
+          <img src="images/ChatGPT_Image_Apr_24__2026__08_09_16_AM-removebg-preview.png" alt="Stephen Cleary Corinthian figurine" />
+        </div>
       </div>
     </div>
 
