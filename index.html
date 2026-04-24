@@ -195,6 +195,10 @@
       display: none;
     }
 
+    .mobile-bio-row {
+      display: none;
+    }
+
     .header-tag {
       display: inline-flex;
       align-items: center;
@@ -959,31 +963,49 @@
         font-size: 15px;
       }
 
-      /* Hide desktop figurine on mobile */
+      /* Hide desktop elements on mobile */
       .hero-figure {
         display: none;
       }
 
-      /* Show inline figurine in header on mobile */
+      .bio-strip {
+        display: none;
+      }
+
       .page-header .container {
         padding-left: 0;
         padding-right: 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
       }
 
-      .header-figurine-mobile {
+      /* Option A — mobile bio row */
+      .mobile-bio-row {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 16px 20px 20px;
+        background: var(--cream-light);
+        border-bottom: 1px solid var(--cream);
+      }
+
+      .mobile-bio-fig {
         flex-shrink: 0;
       }
 
-      .header-figurine-mobile img {
-        height: 90px;
+      .mobile-bio-fig img {
+        height: 140px;
         width: auto;
-        filter: none;
+        display: block;
+        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+      }
+
+      .mobile-bio-text {
+        padding-top: 4px;
+      }
+
+      .mobile-bio-text p {
+        font-size: 13px;
+        color: var(--mid);
+        line-height: 1.6;
       }
 
       .page-subtitle {
@@ -1031,8 +1053,7 @@
     <!-- Page Header -->
     <div class="page-header">
       <div class="container">
-        <div class="header-text">
-          <div class="header-tag">
+        <div class="header-tag">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
               <rect x="5" y="1" width="5" height="3" rx="1" fill="white" transform="rotate(45 5 1)"/>
               <line x1="2" y1="10" x2="6.5" y2="5.5" stroke="white" stroke-width="2" stroke-linecap="round"/>
@@ -1040,20 +1061,27 @@
             Build Log
           </div>
           <h1 class="page-title">stephen<span style="color:var(--red);">j</span>cleary</h1>
-        </div>
-        <div class="header-figurine-mobile">
-          <img src="images/ChatGPT_Image_Apr_24__2026__08_09_16_AM-removebg-preview.png" alt="Stephen Cleary Corinthian figurine" />
-        </div>
       </div>
     </div>
 
-    <!-- Bio strip -->
+    <!-- Bio strip (desktop) -->
     <div class="bio-strip">
       <div class="container">
         <div class="bio-text">
           <p>Brand marketer with 13+ years experience. Global brand marketing at adidas Football, currently a brand manager at The National Lottery in Dublin. This blog is a record of what I'm building, learning, and figuring out along the way.</p>
           <a class="bio-linkedin" href="https://www.linkedin.com/in/clearystephen/" target="_blank" rel="noopener">Connect on LinkedIn</a>
         </div>
+      </div>
+    </div>
+
+    <!-- Mobile bio row (Option A) -->
+    <div class="mobile-bio-row">
+      <div class="mobile-bio-fig">
+        <img src="images/ChatGPT_Image_Apr_24__2026__08_09_16_AM-removebg-preview.png" alt="Stephen Cleary Corinthian figurine" />
+      </div>
+      <div class="mobile-bio-text">
+        <p>Brand marketer with 13+ years experience. Global brand marketing at adidas Football, currently at The National Lottery in Dublin.</p>
+        <a class="bio-linkedin" href="https://www.linkedin.com/in/clearystephen/" target="_blank" rel="noopener">Connect on LinkedIn</a>
       </div>
     </div>
 
