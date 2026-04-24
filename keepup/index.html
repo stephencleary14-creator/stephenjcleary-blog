@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keepy-uppies — SJC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream:       #EDE0C4;
+      --cream-light: #F7F2EA;
+      --red:         #C8102E;
+      --red-deep:    #A00E24;
+      --dark:        #1C1C1C;
+      --mid:         #5C5247;
+      --font:        'Outfit', 'Segoe UI', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--cream);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: var(--font);
+      overflow: hidden;
+    }
+
+    /* Page title */
+    #page-header {
+      width: 100%;
+      max-width: 800px;
+      background: var(--dark);
+      border-top: 4px solid var(--red);
+      padding: 14px 20px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #page-header h1 {
+      font-family: var(--font);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--cream-light);
+      letter-spacing: -0.01em;
+    }
+
+    #canvas-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-left: 3px solid var(--dark);
+      border-right: 3px solid var(--dark);
+      border-bottom: 3px solid var(--dark);
+    }
+
+    /* Mobile touch controls */
+    #touch-controls {
+      display: none;
+      width: 100%;
+      max-width: 800px;
+      padding: 12px 16px;
+      background: var(--dark);
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .touch-btn {
+      background: rgba(237,224,196,0.1);
+      border: 2px solid rgba(237,224,196,0.25);
+      border-radius: 8px;
+      color: var(--cream-light);
+      font-family: var(--font);
+      font-size: 22px;
+      font-weight: 700;
+      padding: 14px 28px;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+      transition: background 0.1s;
+    }
+
+    .touch-btn:active, .touch-btn.pressed {
+      background: rgba(237,224,196,0.25);
+    }
+
+    #kick-btn {
+      background: rgba(200, 16, 46, 0.35);
+      border-color: var(--red);
+      padding: 14px 36px;
+      font-size: 16px;
+      letter-spacing: 0.08em;
+      color: #fff;
+    }
+
+    #kick-btn:active, #kick-btn.pressed {
+      background: var(--red);
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      #touch-controls { display: flex; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="page-header">
+  <h1>Keepy-uppies</h1>
+</div>
+
+<div id="canvas-wrap">
+  <canvas id="gc" width="800" height="600"></canvas>
+</div>
+
+<div id="touch-controls">
+  <button class="touch-btn" id="left-btn">◀</button>
+  <button class="touch-btn" id="kick-btn">KICK</button>
+  <button class="touch-btn" id="right-btn">▶</button>
+</div>
+
+<script>
+// ─── Canvas setup ────────────────────────────────────────────────────────────
+const canvas = document.getElementById('gc');
+const ctx    = canvas.getContext('2d');
+const W = 800, H = 600;
+
+// ─── Image loading ────────────────────────────────────────────────────────────
+const imgs = {
+  stand: new Image(),
+  kick:  new Image(),
+  ball:  new Image()
+};
+imgs.stand.src = 'images/SJC_stand.png';
+imgs.kick.src  = 'images/SJC_kick.png';
+imgs.ball.src  = 'images/football.png';
+
+let imgsLoaded = 0;
+const TOTAL_IMGS = 3;
+Object.values(imgs).forEach(img => {
+  img.onload = () => {
+    imgsLoaded++;
+    if (imgsLoaded === TOTAL_IMGS) ready();
+  };
+  img.onerror = () => {
+    imgsLoaded++; // allow game to start even if an image fails
+    if (imgsLoaded === TOTAL_IMGS) ready();
+  };
+});
+
+// ─── Constants ────────────────────────────────────────────────────────────────
+const GRAVITY    = 0.35;
+const PLAYER_SPD = 6;
+const KICK_POWER = -15;
+const GROUND_Y   = H - 40;       // y at which ball is "on the ground"
+const PLAYER_W   = 140;
+const PLAYER_H   = 200;
+const PLAYER_Y   = GROUND_Y - PLAYER_H; // player feet on ground
+const BALL_R     = 28;
+const KICK_FRAMES = 22;           // how many frames the kick sprite shows
+const HIT_X_RANGE = 80;          // horizontal tolerance for kick
+const HIT_Y_LOW  = PLAYER_Y - 10; // ball must be at least this high
+const HIT_Y_HIGH = PLAYER_Y + 40; // and no lower than this
+
+// ─── Game state ───────────────────────────────────────────────────────────────
+const STATE = { WAITING: 0, PLAYING: 1, GAME_OVER: 2 };
+let state = STATE.WAITING;
+let score = 0;
+let highScore = parseInt(localStorage.getItem('keepup_hs') || '0');
+
+let player, ball;
+
+function initGame() {
+  player = {
+    x: W / 2 - PLAYER_W / 2,
+    y: PLAYER_Y,
+    kicking: false,
+    kickTimer: 0
+  };
+  ball = {
+    x: W / 2 + (Math.random() - 0.5) * 200,
+    y: 60,
+    vx: (Math.random() - 0.5) * 2,
+    vy: 2
+  };
+  score = 0;
+}
+
+// ─── Input ────────────────────────────────────────────────────────────────────
+const keys = {};
+document.addEventListener('keydown', e => {
+  keys[e.code] = true;
+  if (e.code === 'Space') {
+    e.preventDefault();
+    if (state === STATE.WAITING) {
+      state = STATE.PLAYING;
+    } else if (state === STATE.GAME_OVER) {
+      initGame();
+      state = STATE.PLAYING;
+    }
+  }
+});
+document.addEventListener('keyup', e => { keys[e.code] = false; });
+
+// Touch controls
+const leftBtn  = document.getElementById('left-btn');
+const rightBtn = document.getElementById('right-btn');
+const kickBtn  = document.getElementById('kick-btn');
+
+function touchStart(btn, code) {
+  btn.addEventListener('touchstart', e => {
+    e.preventDefault();
+    keys[code] = true;
+    btn.classList.add('pressed');
+    if (code === 'Space') {
+      if (state === STATE.WAITING)   { state = STATE.PLAYING; }
+      else if (state === STATE.GAME_OVER) { initGame(); state = STATE.PLAYING; }
+    }
+  }, { passive: false });
+  btn.addEventListener('touchend', e => {
+    e.preventDefault();
+    keys[code] = false;
+    btn.classList.remove('pressed');
+  }, { passive: false });
+}
+touchStart(leftBtn,  'ArrowLeft');
+touchStart(rightBtn, 'ArrowRight');
+touchStart(kickBtn,  'Space');
+
+// ─── Kick logic ───────────────────────────────────────────────────────────────
+let spaceWasDown = false;
+
+function tryKick() {
+  const spaceNow = keys['Space'];
+  if (!spaceNow || spaceWasDown) { spaceWasDown = spaceNow; return; }
+  spaceWasDown = true;
+
+  const playerCX = player.x + PLAYER_W / 2;
+  const xOk = Math.abs(ball.x - playerCX) < HIT_X_RANGE;
+  const yOk = ball.y + BALL_R >= HIT_Y_LOW && ball.y - BALL_R < HIT_Y_HIGH;
+
+  if (xOk && yOk) {
+    ball.vy = KICK_POWER;
+    ball.vx = (Math.random() - 0.5) * 5;
+    player.kicking   = true;
+    player.kickTimer = KICK_FRAMES;
+    score++;
+  }
+}
+
+// ─── Update ───────────────────────────────────────────────────────────────────
+function update() {
+  if (state !== STATE.PLAYING) return;
+
+  // Player movement
+  if (keys['ArrowLeft']  || keys['KeyA']) player.x -= PLAYER_SPD;
+  if (keys['ArrowRight'] || keys['KeyD']) player.x += PLAYER_SPD;
+  player.x = Math.max(0, Math.min(W - PLAYER_W, player.x));
+
+  // Kick timer
+  if (player.kicking) {
+    player.kickTimer--;
+    if (player.kickTimer <= 0) player.kicking = false;
+  }
+
+  // Kick attempt
+  tryKick();
+
+  // Ball physics
+  ball.vy += GRAVITY;
+  ball.x  += ball.vx;
+  ball.y  += ball.vy;
+
+  // Wall bounce
+  if (ball.x - BALL_R < 0)   { ball.x = BALL_R;   ball.vx *= -0.6; }
+  if (ball.x + BALL_R > W)   { ball.x = W - BALL_R; ball.vx *= -0.6; }
+
+  // Ground check → game over
+  if (ball.y + BALL_R >= GROUND_Y) {
+    ball.y = GROUND_Y - BALL_R;
+    ball.vy = 0;
+    ball.vx = 0;
+    if (score > highScore) {
+      highScore = score;
+      localStorage.setItem('keepup_hs', highScore);
+    }
+    state = STATE.GAME_OVER;
+  }
+}
+
+// ─── Draw helpers ─────────────────────────────────────────────────────────────
+function drawPitch() {
+  // Sky-ish top strip
+  ctx.fillStyle = '#C8102E';
+  ctx.fillRect(0, 0, W, 60);
+
+  // Grass — alternating stripes
+  const stripeW = 80;
+  for (let i = 0; i < W / stripeW + 1; i++) {
+    ctx.fillStyle = i % 2 === 0 ? '#2e7d32' : '#388e3c';
+    ctx.fillRect(i * stripeW, 60, stripeW, GROUND_Y - 60);
+  }
+
+  // Ground strip
+  ctx.fillStyle = '#4e342e';
+  ctx.fillRect(0, GROUND_Y, W, H - GROUND_Y);
+
+  // White pitch lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+  ctx.lineWidth = 2;
+
+  // Half-way line (horizontal)
+  ctx.beginPath();
+  ctx.moveTo(0, H / 2);
+  ctx.lineTo(W, H / 2);
+  ctx.stroke();
+
+  // Centre circle
+  ctx.beginPath();
+  ctx.arc(W / 2, H / 2, 60, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Centre spot
+  ctx.fillStyle = 'rgba(255,255,255,0.55)';
+  ctx.beginPath();
+  ctx.arc(W / 2, H / 2, 4, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Ground line
+  ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(0, GROUND_Y);
+  ctx.lineTo(W, GROUND_Y);
+  ctx.stroke();
+}
+
+function drawPlayer() {
+  const sprite = player.kicking ? imgs.kick : imgs.stand;
+  if (sprite.complete && sprite.naturalWidth > 0) {
+    ctx.drawImage(sprite, player.x, player.y, PLAYER_W, PLAYER_H);
+  } else {
+    // Fallback rectangle if image not loaded
+    ctx.fillStyle = player.kicking ? '#e53935' : '#1565C0';
+    ctx.fillRect(player.x, player.y, PLAYER_W, PLAYER_H);
+  }
+}
+
+function drawBall() {
+  if (imgs.ball.complete && imgs.ball.naturalWidth > 0) {
+    ctx.drawImage(imgs.ball, ball.x - BALL_R, ball.y - BALL_R, BALL_R * 2, BALL_R * 2);
+  } else {
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, BALL_R, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+function drawHUD() {
+  // Score number — cream-light with dark shadow
+  ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(160,14,36,0.6)';
+  ctx.font = '700 52px Outfit, sans-serif';
+  ctx.fillText(score, W / 2 + 2, 52);
+  ctx.fillStyle = '#F7F2EA';
+  ctx.fillText(score, W / 2, 50);
+
+  // High score top-right — mid tone
+  ctx.textAlign = 'right';
+  ctx.font = '600 12px Outfit, sans-serif';
+  ctx.fillStyle = 'rgba(247,242,234,0.65)';
+  ctx.fillText(`Best: ${highScore}`, W - 12, 22);
+}
+
+function drawOverlay(title, sub1, sub2) {
+  ctx.fillStyle = 'rgba(28,28,28,0.72)';
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.textAlign = 'center';
+
+  // Red accent rule above title
+  ctx.fillStyle = '#C8102E';
+  ctx.fillRect(W / 2 - 36, H / 2 - 74, 72, 4);
+
+  // Title — cream-light, headline weight
+  ctx.font = '700 60px Outfit, sans-serif';
+  ctx.fillStyle = '#F7F2EA';
+  ctx.fillText(title, W / 2, H / 2 - 24);
+
+  // Sub 1 — cream, semi-bold
+  ctx.font = '600 24px Outfit, sans-serif';
+  ctx.fillStyle = '#EDE0C4';
+  ctx.fillText(sub1, W / 2, H / 2 + 18);
+
+  // Sub 2 — mid/muted
+  ctx.font = '400 16px Outfit, sans-serif';
+  ctx.fillStyle = 'rgba(237,224,196,0.55)';
+  ctx.fillText(sub2, W / 2, H / 2 + 48);
+}
+
+function drawWaiting() {
+  drawOverlay('Keepy-uppies', 'Use ← → to move', 'Press space to start');
+  // Draw idle player and ball at start position
+  drawPlayer();
+  drawBall();
+}
+
+function drawGameOver() {
+  drawBall();
+  drawPlayer();
+  const newBest = score === highScore && score > 0;
+  const sub1 = newBest ? `New best: ${score}` : `You scored: ${score}`;
+  drawOverlay('Game Over', sub1, 'Press space to play again');
+}
+
+// ─── Draw ─────────────────────────────────────────────────────────────────────
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  drawPitch();
+
+  if (state === STATE.WAITING) {
+    drawWaiting();
+    return;
+  }
+
+  drawPlayer();
+  drawBall();
+  drawHUD();
+
+  if (state === STATE.GAME_OVER) {
+    drawGameOver();
+  }
+}
+
+// ─── Game loop ────────────────────────────────────────────────────────────────
+let lastTime = 0;
+function loop(ts) {
+  const dt = Math.min(ts - lastTime, 50); // cap at 50ms
+  lastTime = ts;
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
+
+// ─── Start ────────────────────────────────────────────────────────────────────
+function ready() {
+  initGame();
+  requestAnimationFrame(loop);
+}
+
+// Safety: start anyway after 2s even if images stall
+setTimeout(() => {
+  if (imgsLoaded < TOTAL_IMGS) {
+    imgsLoaded = TOTAL_IMGS;
+    ready();
+  }
+}, 2000);
+</script>
+</body>
+</html>
