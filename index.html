@@ -1289,7 +1289,7 @@
           <video controls style="width:100%;border-radius:6px;margin:28px 0;display:block;">
             <source src="images/SJC_kick_update.mp4" type="video/mp4" />
           </video>
-          <p>The head wobbles at the end. That's just what bobbleheads do.</p>
+
           <p>This is a first attempt. I'll tweak the character further and build out more movements and expressions over time.</p>
         `
       },
@@ -1627,7 +1627,10 @@
     document.querySelector('#featured-thumb img').src = featured.photo;
     document.querySelector('#featured-thumb img').alt = featured.photoAlt || '';
     document.querySelector('#featured-thumb .thumb-icon').innerHTML = featured.icon;
-    if (featured.photoBg) document.getElementById('featured-thumb').style.background = featured.photoBg;
+    if (featured.photoBg) {
+      document.getElementById('featured-thumb').style.background = featured.photoBg;
+      document.querySelector('#featured-thumb img').style.objectFit = 'contain';
+    }
 
     // ── Archive Grid ──
     function renderArchiveGrid() {
@@ -1638,7 +1641,7 @@
         const entry = entries[i];
         const excerpt = entry.body.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 120) + '…';
         const photo = entry.photo
-          ? `<img src="${entry.photo}" alt="${entry.photoAlt || ''}" style="object-position: ${entry.photoPosition || 'center center'}" />`
+          ? `<img src="${entry.photo}" alt="${entry.photoAlt || ''}" style="object-position: ${entry.photoPosition || 'center center'}; ${entry.photoBg ? 'object-fit: contain;' : ''}" />`
           : '';
         return `
           <div class="card archive-card" onclick="openEntry(${i})">
