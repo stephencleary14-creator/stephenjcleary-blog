@@ -1272,7 +1272,6 @@
         icon: icons.mascot,
         photo: 'images/SJC_kick_thumb.png',
         photoAlt: 'Animated figurine of Stephen Cleary mid-kick, leg raised, looking up',
-        photoBg: '#000000',
         meta: '25 April 2026',
         title: "He kicked! Animating my Brand Mascot",
         body: `
@@ -1627,10 +1626,7 @@
     document.querySelector('#featured-thumb img').src = featured.photo;
     document.querySelector('#featured-thumb img').alt = featured.photoAlt || '';
     document.querySelector('#featured-thumb .thumb-icon').innerHTML = featured.icon;
-    if (featured.photoBg) {
-      document.getElementById('featured-thumb').style.background = featured.photoBg;
-      document.querySelector('#featured-thumb img').style.objectFit = 'contain';
-    }
+    if (featured.photoBg) document.getElementById('featured-thumb').style.background = featured.photoBg;
 
     // ── Archive Grid ──
     function renderArchiveGrid() {
@@ -1641,7 +1637,7 @@
         const entry = entries[i];
         const excerpt = entry.body.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 120) + '…';
         const photo = entry.photo
-          ? `<img src="${entry.photo}" alt="${entry.photoAlt || ''}" style="object-position: ${entry.photoPosition || 'center center'}; ${entry.photoBg ? 'object-fit: contain;' : ''}" />`
+          ? `<img src="${entry.photo}" alt="${entry.photoAlt || ''}" style="object-position: ${entry.photoPosition || 'center center'}" />`
           : '';
         return `
           <div class="card archive-card" onclick="openEntry(${i})">
