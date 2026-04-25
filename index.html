@@ -1270,6 +1270,30 @@
     const entries = [
       {
         icon: icons.mascot,
+        photo: 'images/Mascot.png',
+        photoAlt: 'A LoRA-generated figurine of Stephen Cleary in cream kit with number 9 and SJC crest',
+        meta: '25 April 2026',
+        title: "He kicked! Animating my Brand Mascot",
+        body: `
+          <p>The original figurine on this blog was made in ChatGPT. One session, a good prompt, and it came out better than expected — the CLEARY base, the SJC crest, the kit colours. I was happy with it.</p>
+          <p>The problem is ChatGPT has no memory of a character. Every time you go back, the face changes. It's stateless. That made the figurine a one-off rather than an asset I could actually use.</p>
+          <p>So I wanted to fix that. I wanted a version I could reproduce — the same face, the same kit, any pose.</p>
+          <p>The answer was a LoRA. A LoRA is a fine-tuned AI model trained on a specific set of images. Instead of prompting a general model and hoping it lands on your face, you train a small model that knows what you look like. Then you use that every time.</p>
+          <p>I did this on fal.ai, using around 15 photos of myself. The result:</p>
+          <img src="images/SJC_ai.jpg" alt="A LoRA-generated photorealistic portrait of Stephen Cleary" class="entry-img" />
+          <p>That's a generated image, not a photo. The face is locked — I can reproduce it any time I want with a prompt.</p>
+          <p>From there I prompted the model to render that face as a figurine — chibi proportions, cream jersey, number 9, SJC crest, CLEARY base. Lots of iteration. Lots of prompts. Getting the proportions right was the trickiest part — AI models have a strong gravitational pull toward realistic human proportions. But eventually:</p>
+          <img src="images/Mascot.png" alt="A LoRA-generated Corinthian-style figurine of Stephen Cleary with coffee, phone, laptop and football" class="entry-img" />
+          <p>Then I took it one step further. I uploaded the figurine image to Kling — an AI video model — and prompted it to kick a ball. Five seconds later:</p>
+          <video controls style="width:100%;border-radius:6px;margin:28px 0;display:block;">
+            <source src="images/MascotKick.mp4" type="video/mp4" />
+          </video>
+          <p>The head wobbles at the end. That's just what bobbleheads do.</p>
+          <p>This is a first attempt. I'll tweak the character further and build out more movements and expressions over time.</p>
+        `
+      },
+      {
+        icon: icons.mascot,
         photo: 'images/keepup_screenshot.png',
         photoAlt: 'Keepy-uppies game start screen showing the footballer sprite on a green pitch',
         meta: '24 April 2026',
