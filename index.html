@@ -1272,6 +1272,7 @@
         icon: icons.mascot,
         photo: 'images/SJC_kick_thumb.png',
         photoAlt: 'Animated figurine of Stephen Cleary mid-kick, leg raised, looking up',
+        photoBg: '#000000',
         meta: '25 April 2026',
         title: "He kicked! Animating my Brand Mascot",
         body: `
@@ -1626,6 +1627,7 @@
     document.querySelector('#featured-thumb img').src = featured.photo;
     document.querySelector('#featured-thumb img').alt = featured.photoAlt || '';
     document.querySelector('#featured-thumb .thumb-icon').innerHTML = featured.icon;
+    if (featured.photoBg) document.getElementById('featured-thumb').style.background = featured.photoBg;
 
     // ── Archive Grid ──
     function renderArchiveGrid() {
@@ -1640,7 +1642,7 @@
           : '';
         return `
           <div class="card archive-card" onclick="openEntry(${i})">
-            <div class="archive-image">
+            <div class="archive-image" style="${entry.photoBg ? `background:${entry.photoBg}` : ''}">
               ${photo}
               <div class="thumb-icon">${entry.icon}</div>
             </div>
