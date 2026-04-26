@@ -1270,6 +1270,38 @@
     const entries = [
       {
         icon: icons.mascot,
+        photo: 'images/animation_thumb.png',
+        photoAlt: 'Corinthian-style figurine of Stephen Cleary spinning a ball on one finger',
+        meta: '26 April 2026',
+        title: "Prompting my Mascot to Move",
+        body: `
+          <p>After animating the kick, I wanted to see how far I could push the mascot. Could I get it to do other things? A tactics board. Keepy-uppies. A ball spin. Would the character hold up across different animations, or would it drift into something unrecognisable every time?</p>
+          <p>The short answer: it depends entirely on how you write the prompt.</p>
+          <p>I spent a session working through this with Claude, using an article from Run With Foxes as the starting framework. The key insight was simple but easy to miss — treat prompting like a character brief. Lock the personality explicitly. Describe the end pose, not the action. Add a sentence that freezes what shouldn't move.</p>
+          <p>This was an early attempt — a knee-slide celebration. The body went wrong, but the face was already getting there.</p>
+          <video controls style="width:100%;border-radius:6px;margin:28px 0;display:block;">
+            <source src="images/knee_slide_trim.mp4" type="video/mp4" />
+          </video>
+          <p>A few things I learned the hard way:</p>
+          <p>The model defaults to "American football" if you just say "football". Always say black and white soccer ball.</p>
+          <p>Dark backgrounds make friendly expressions look sinister. Bright warm lighting is non-negotiable.</p>
+          <p>Describing movement produces worse results than describing a static pose.</p>
+          <p>The wink was a dead end. Both eyes kept closing. I swapped it for a thumbs up and got a much cleaner result.</p>
+          <p>Here are three that landed well:</p>
+          <video controls style="width:100%;border-radius:6px;margin:28px 0;display:block;">
+            <source src="images/tactics_trim.mp4" type="video/mp4" />
+          </video>
+          <video controls style="width:100%;border-radius:6px;margin:28px 0;display:block;">
+            <source src="images/header_keepyups_trim.mp4" type="video/mp4" />
+          </video>
+          <video controls style="width:100%;border-radius:6px;margin:28px 0;display:block;">
+            <source src="images/ballspin_trim.mp4" type="video/mp4" />
+          </video>
+          <p>The formula is still being refined. But consistency doesn't just mean repetition — the character needs to feel like the same person across different situations. Same face, same warmth, different moment. That's what I'm working toward.</p>
+        `
+      },
+      {
+        icon: icons.mascot,
         photo: 'images/SJC_kick_thumb.png',
         photoAlt: 'Animated figurine of Stephen Cleary mid-kick, leg raised, looking up',
         meta: '25 April 2026',
