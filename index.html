@@ -1265,6 +1265,17 @@
         <!-- Highlight -->
         <path d="M66 40 C66 36 70 32 76 30" stroke="#EDE0C4" stroke-width="4" stroke-linecap="round" opacity="0.55"/>
       </svg>`,
+      fruit: `<svg viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="160" height="120" fill="#EDE0C4"/>
+        <!-- Fruit body (orange) -->
+        <circle cx="80" cy="68" r="36" fill="#C8102E"/>
+        <!-- Leaf -->
+        <path d="M80 32 Q92 18 106 22 Q96 34 80 32Z" fill="#C8102E" opacity="0.75"/>
+        <!-- Stem -->
+        <line x1="80" y1="32" x2="80" y2="42" stroke="#C8102E" stroke-width="4" stroke-linecap="round"/>
+        <!-- Highlight -->
+        <circle cx="66" cy="56" r="8" fill="#EDE0C4" opacity="0.2"/>
+      </svg>`,
       fiveMin: `<svg viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <rect width="160" height="120" fill="#EDE0C4"/>
         <!-- Clock face -->
@@ -1280,6 +1291,26 @@
     };
 
     const entries = [
+      {
+        icon: icons.fruit,
+        photo: 'images/FruitVeg.png',
+        photoAlt: 'SJC figurine head emerging from a towering pile of fruit and vegetables in a supermarket aisle',
+        meta: '14 May 2026',
+        title: "Sweating the brand asset",
+        body: `
+          <p>Tesco recently launched a campaign for their Free Fruit &amp; Veg for Schools initiative. It introduces a character called Plumbert the Fruit Giant. It's lovely work — fun, well branded early and often, with a great track. No wonder it scored a 5.9 star rating with System 1.</p>
+          <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:6px;margin:28px 0;">
+            <iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube.com/embed/3CYzNYeG3Kg?si=IbXhnZgdKykcDijz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          </div>
+          <p>A character like Plumbert is exactly what Jenni Romaniuk would call a Distinctive Brand Asset in the making. Her work in <em>Building Distinctive Brand Assets</em> is clear on this: assets need to be grown over time. Used consistently. Sweated.</p>
+          <p>So I went looking for Plumbert beyond the ad. Checked Tesco's website. Nothing. Their Instagram is running cutdowns of the ad, but they're not exactly made for social. For a character with this much personality, that feels like a missed opportunity.</p>
+          <p>Why hasn't it been extended? One possibility is the design. Plumbert is a complicated character to reproduce consistently — and consistency is everything when you're building a DBA.</p>
+          <img src="images/FruitVeg.png" alt="SJC figurine head emerging from a towering pile of fruit and vegetables in a supermarket aisle" class="entry-img" />
+          <p>It's something I've been thinking about with my own mascot. I've been working hard to keep the face consistent across every still and animation. Same kit, same crest, same base. Even so, I've caught the number 15 appearing on the jersey at times. The model drifts. You have to keep pulling it back.</p>
+          <p>In a world where AI is increasingly used to generate brand content, this is a real question: if the tool generating your asset can't hold the details, what does that mean for consistency? Plumbert's complexity might make him harder to scale — but that's exactly the kind of problem worth solving if you believe in the asset.</p>
+          <p>Sweat the asset. Just make sure it stays recognisable while you do.</p>
+        `
+      },
       {
         icon: icons.fiveMin,
         photo: 'images/5min_timer.png',
