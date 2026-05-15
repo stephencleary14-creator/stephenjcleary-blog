@@ -8,6 +8,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5HLCJ1PDQK"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5HLCJ1PDQK');
+  </script>
   <style>
     :root {
       --cream:       #EDE0C4;
@@ -1691,6 +1699,9 @@
       },
     ];
 
+    let _entryOpenTime = null;
+    let _entryOpenTitle = null;
+
     function openEntry(index) {
       const entry = entries[index];
       document.getElementById('entry-meta').innerHTML = entry.meta;
@@ -1703,9 +1714,18 @@
       setTimeout(() => {
         document.querySelectorAll('.slideshow').forEach(el => slideshowInit(el.id));
       }, 50);
+      _entryOpenTime = Date.now();
+      _entryOpenTitle = entry.title;
+      gtag('event', 'entry_open', { entry_title: entry.title });
     }
 
     function closeEntry() {
+      if (_entryOpenTime && _entryOpenTitle) {
+        const seconds = Math.round((Date.now() - _entryOpenTime) / 1000);
+        gtag('event', 'entry_dwell', { entry_title: _entryOpenTitle, seconds_read: seconds });
+        _entryOpenTime = null;
+        _entryOpenTitle = null;
+      }
       document.getElementById('overlay').classList.remove('open');
       if (entryOpenedFromList) {
         entryOpenedFromList = false;
