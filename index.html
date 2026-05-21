@@ -1188,6 +1188,19 @@
   <script>
     // SVG icons: bold geometric, red (#C8102E) on cream (#EDE0C4)
     const icons = {
+      lough: `<svg viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="160" height="120" fill="#EDE0C4"/>
+        <!-- Water waves -->
+        <path d="M10 88 Q30 80 50 88 Q70 96 90 88 Q110 80 130 88 Q150 96 160 88" stroke="#C8102E" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M10 100 Q30 92 50 100 Q70 108 90 100 Q110 92 130 100 Q150 108 160 100" stroke="#C8102E" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5"/>
+        <!-- Boat hull -->
+        <path d="M30 82 L40 68 L120 68 L130 82 Z" fill="#C8102E"/>
+        <!-- Cabin -->
+        <rect x="60" y="50" width="44" height="20" rx="3" fill="#C8102E" opacity="0.75"/>
+        <!-- Cabin window -->
+        <rect x="68" y="55" width="12" height="10" rx="2" fill="#EDE0C4"/>
+        <rect x="86" y="55" width="12" height="10" rx="2" fill="#EDE0C4"/>
+      </svg>`,
       socialCopy: `<svg viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <rect width="160" height="120" fill="#EDE0C4"/>
         <rect x="36" y="28" width="88" height="54" rx="8" fill="#C8102E"/>
@@ -1311,6 +1324,28 @@
     };
 
     const entries = [
+      {
+        icon: icons.lough,
+        photo: 'images/SJC_lough_pose.png',
+        photoAlt: 'SJC figurine standing on the rear deck of a cabin cruiser sailing along an Irish lough',
+        meta: '21 May 2026',
+        title: "Creativity, Codes & Constraints",
+        body: `
+          <video controls style="width:100%;border-radius:6px;margin:0 0 28px;display:block;">
+            <source src="images/lough_animation.mp4" type="video/mp4" />
+          </video>
+          <p>A few years ago I worked on an ad for The National Lottery. It was built around a brilliant organisation called Lough Ree Access for All, a group who built an accessible boat so that everyone, regardless of ability, could get out on the water and experience the lough.</p>
+          <p>When you're making an ad for a charity or a third-party cause, the emotional angles are everywhere. The people who built it. The service users. The challenges that were overcome. The volunteers. The challenge isn't finding the emotion. It's deciding which emotion to follow, and how to tell a complete story in 40 seconds while making sure the brand still gets noticed.</p>
+          <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:6px;margin:28px 0;">
+            <iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube.com/embed/SUCXzv0y7AE?si=yar2HA3_Zf694Kgs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          </div>
+          <p>I've been listening to Adam Morgan's podcast <em>Let's Make This More Interesting</em> recently. A conversation with Magda Osinska from Aardman stuck with me. She talked about the challenge and the thrill of working within constraints: the stop-motion process, the tiny sets, the physical limitations of the craft. But they make it work. And they make it work beautifully. Maybe it's the constraints that keep the work focused to complete the job it's meant to do.</p>
+          <p>The Lough Ree ad was packed with emotion. But it was also well-branded. Those two things can and should co-exist. We had a charming voiceover from a key member of the team. We showed the pure joy of service users out on the water. And it was all wrapped up and presented clearly by the National Lottery. The logo early, the key funding message at the end, and the brand track running throughout.</p>
+          <p>We tested it with System 1 at the time. It scored 5.6 stars. That's genuinely rare. Around 1% of ads ever reach that level. The emotional intensity was rated exceptional. Brand fluency hit 92%. Participants felt pleased for others. Uplifted.</p>
+          <p>A key character. An unfolding story. A clear sense of place. Well-branded.</p>
+          <p>Creativity and codes, co-existing.</p>
+        `
+      },
       {
         icon: icons.mascot,
         photo: 'images/lightswitch_thumb.png',
