@@ -1188,6 +1188,19 @@
   <script>
     // SVG icons: bold geometric, red (#C8102E) on cream (#EDE0C4)
     const icons = {
+      handshake: `<svg viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="160" height="120" fill="#EDE0C4"/>
+        <!-- Left arm -->
+        <path d="M10 75 Q30 65 55 62" stroke="#C8102E" stroke-width="7" stroke-linecap="round" fill="none"/>
+        <!-- Left hand fingers -->
+        <path d="M55 62 Q65 55 72 58 Q70 48 78 47 Q76 38 84 39 Q83 31 90 33 L95 50 Q100 45 104 50 L98 65" stroke="#C8102E" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <!-- Right arm -->
+        <path d="M150 75 Q130 65 105 62" stroke="#C8102E" stroke-width="7" stroke-linecap="round" fill="none"/>
+        <!-- Right hand fingers -->
+        <path d="M105 62 Q95 55 88 58 Q90 48 82 47 Q84 38 76 39 Q77 31 70 33 L65 50 Q60 45 56 50 L62 65" stroke="#C8102E" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <!-- Clasped centre -->
+        <ellipse cx="80" cy="62" rx="18" ry="10" fill="#C8102E" opacity="0.85"/>
+      </svg>`,
       lough: `<svg viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <rect width="160" height="120" fill="#EDE0C4"/>
         <!-- Water waves -->
@@ -1324,6 +1337,23 @@
     };
 
     const entries = [
+      {
+        icon: icons.handshake,
+        photo: 'images/Xabi.png',
+        photoAlt: 'Xabi Alonso',
+        meta: '22 May 2026',
+        title: "Hiring Xabi Alonso",
+        body: `
+          <img src="images/Xabi.png" alt="Xabi Alonso" class="entry-img" />
+          <p>Once upon a time I gave Xabi Alonso his "first job" in management.</p>
+          <p>I was hoping to post this in celebration of him returning to Liverpool, but instead he has gone to Chelsea.</p>
+          <p>Nearly 10 years ago I managed a UEFA Champions League activation at adidas called Tango Squad FC. It was a micro-influencer campaign, a global super team of what we would now call content creators.</p>
+          <p>The team needed a manager and Xabi Alonso had recently retired, planning his next move. We were delighted he joined the project to "manage" the team.</p>
+          <p>We took the squad across Europe, training at the biggest clubs and meeting the biggest players. By giving the kids this access and creating our docu-series, we wanted to find out: could the combined engaged reach of the micro-influencers match the reach of someone like Xabi? Well, we found that it did for most of the series.</p>
+          <p>That being said, when I stood at the sideline of a pitch in Madrid and captured the video of Xabi announcing he was going into management, the news went everywhere. It was a teaser for the campaign. It needed that big moment to drive the awareness. Usually that's how things go viral. It's not from one-to-one word of mouth, it's from a well followed account of influence spreading it to the masses.</p>
+          <p>So Xabi has gone on to have an exciting managerial career so far. It doesn't look like he'll manage Liverpool sadly, but at least I can say he did manage my other team.</p>
+        `
+      },
       {
         icon: icons.lough,
         photo: 'images/SJC_lough_pose.png',
