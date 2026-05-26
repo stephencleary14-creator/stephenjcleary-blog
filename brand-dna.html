@@ -604,8 +604,14 @@
     }
     const text = json.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!text) throw new Error('Empty response from Gemini — please try again.');
-    // Strip markdown fences Gemini occasionally wraps around JSON
-    const clean = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
+    // Strip markdown fences, comments, and trailing commas Gemini occasionally adds
+    const clean = text
+      .replace(/^```(?:json)?\s*/i, '')   // opening fence
+      .replace(/\s*```\s*$/i, '')          // closing fence
+      .replace(/\/\/[^\n]*/g, '')          // // line comments
+      .replace(/\/\*[\s\S]*?\*\//g, '')    // /* block comments */
+      .replace(/,\s*([}\]])/g, '$1')       // trailing commas before } or ]
+      .trim();
     return JSON.parse(clean);
   }
 
