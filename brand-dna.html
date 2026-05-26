@@ -238,6 +238,25 @@
     .pizza-svg { width: 100%; height: auto; display: block; }
     .wc-canvas  { width: 100%; height: auto; display: block; border-radius: 8px; }
 
+    /* ── SPLIT WORD CLOUDS ── */
+    .wc-section { margin-bottom: 16px; }
+    .wc-section:last-child { margin-bottom: 0; }
+    .wc-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .wc-label-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
     /* ── TP COLUMN PLACEHOLDER (before enrichment) ── */
     .tp-placeholder {
       background: var(--cream-light);
@@ -474,8 +493,21 @@
           <h3>Consumer Associations</h3>
           <span class="badge badge-ai">AI Analysis</span>
         </div>
-        <p class="panel-sub">Words consumers use when talking about this brand across social and review platforms.</p>
-        <canvas id="wc-canvas-ai" class="wc-canvas"></canvas>
+        <p class="panel-sub">Words consumers use when talking about this brand — split by sentiment.</p>
+        <div class="wc-section">
+          <div class="wc-label">
+            <span class="wc-label-dot" style="background:#10B981"></span>
+            Positive
+          </div>
+          <canvas id="wc-canvas-pos" class="wc-canvas"></canvas>
+        </div>
+        <div class="wc-section">
+          <div class="wc-label">
+            <span class="wc-label-dot" style="background:#C8102E"></span>
+            Negative
+          </div>
+          <canvas id="wc-canvas-neg" class="wc-canvas"></canvas>
+        </div>
       </div>
     </div>
 
@@ -633,14 +665,14 @@ Analyse the brand "${brandName}" and return a JSON object with EXACTLY this stru
       "aiSocialRationale": "string — 1 sentence explaining the score"
     }
   ],
-  "wordCloudTerms": [{ "word": "string", "weight": number 1-10 }],
+  "wordCloudTerms": [{ "word": "string", "weight": number 1-10, "sentiment": "positive" or "negative" }],
   "confidenceNote": "string — brief note on brand familiarity and confidence"
 }
 
 RULES:
 - dnaAxes: EXACTLY 5 items. Choose the 5 most strategically significant dimensions.
 - aiSocialScore: 80-100 consumers actively echo this; 50-79 partial backing; 20-49 weak backing; 0-19 contradicted or invisible.
-- wordCloudTerms: EXACTLY 20 items. Words consumers use online. Weight 10 = most prominent. Exclude brand name.
+- wordCloudTerms: EXACTLY 20 items. Words consumers use online. Weight 10 = most prominent. Exclude brand name. Each term must have sentiment "positive" (favourable associations) or "negative" (complaints, criticism, concerns). Aim for roughly 12-14 positive and 6-8 negative terms reflecting realistic brand conversation.
 - Return ONLY valid JSON, no markdown, no explanation.`;
   }
 
@@ -783,8 +815,19 @@ RULES:
   }
 
   // ── WORD CLOUD ──
-  function drawWordCloud(canvas, terms) {
-    const W = 680, H = 300;
+  // palette: 'positive' = greens, 'negative' = reds
+  function drawWordCloud(canvas, terms, palette = 'positive') {
+    if (!terms || terms.length === 0) {
+      canvas.width = 680; canvas.height = 60;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#F7F2EA';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#5C5247';
+      ctx.font = "400 13px 'Outfit', sans-serif";
+      ctx.fillText('No terms found', 12, 36);
+      return;
+    }
+    const W = 680, H = 200;
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = '#F7F2EA';
@@ -795,9 +838,12 @@ RULES:
     const cx = W / 2, cy = H / 2;
 
     for (const term of sorted) {
-      const size  = 13 + ((term.weight - 1) / 9) * 39;
+      const size  = 12 + ((term.weight - 1) / 9) * 32;
       const bold  = term.weight >= 6 ? '700' : '400';
-      const color = term.weight >= 8 ? '#C8102E' : term.weight >= 5 ? '#1C1C1C' : '#5C5247';
+      // colour by palette
+      const color = palette === 'negative'
+        ? (term.weight >= 8 ? '#C8102E' : term.weight >= 5 ? '#A00E24' : '#5C5247')
+        : (term.weight >= 8 ? '#065F46' : term.weight >= 5 ? '#10B981' : '#5C5247');
       ctx.font = `${bold} ${size}px 'Outfit', sans-serif`;
       const tw = ctx.measureText(term.word).width;
       const th = size * 1.15;
@@ -869,7 +915,12 @@ RULES:
 
       drawPizzaChart(document.getElementById('pizza-svg-ai'), data.dnaAxes, 'aiSocialScore');
       renderAxesCards();
-      document.fonts.ready.then(() => drawWordCloud(document.getElementById('wc-canvas-ai'), data.wordCloudTerms));
+      const posTerms = (data.wordCloudTerms || []).filter(t => t.sentiment === 'positive');
+      const negTerms = (data.wordCloudTerms || []).filter(t => t.sentiment === 'negative');
+      document.fonts.ready.then(() => {
+        drawWordCloud(document.getElementById('wc-canvas-pos'), posTerms, 'positive');
+        drawWordCloud(document.getElementById('wc-canvas-neg'), negTerms, 'negative');
+      });
 
     } catch (err) {
       clearInterval(iv);
