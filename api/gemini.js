@@ -1,5 +1,3 @@
-const https = require('https');
-
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -7,7 +5,7 @@ module.exports = async function handler(req, res) {
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({ error: 'API key not configured' });
+    return res.status(500).json({ error: 'API key not configured — env var missing' });
   }
 
   try {
@@ -21,7 +19,16 @@ module.exports = async function handler(req, res) {
     );
 
     const data = await response.json();
-    return res.status(response.status).json(data);
+
+    // Pass Gemini's full error back so we can see what's wrong
+    if (!response.ok) {
+      return res.status(response.status).json({
+        error: `Gemini returned ${response.status}`,
+        detail: data
+      });
+    }
+
+    return res.status(200).json(data);
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }

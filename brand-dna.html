@@ -594,13 +594,14 @@
       await new Promise(r => setTimeout(r, 3000));
       return callGemini(prompt, 2);
     }
+    const json = await res.json();
     if (!res.ok) {
+      const detail = json?.detail?.error?.message || json?.error || '';
       const msg = res.status === 429 ? 'Too many requests — please wait a moment and try again.'
                 : res.status >= 500  ? 'Gemini servers are temporarily busy. Please try again in a few seconds.'
-                : `API error (${res.status}). Please try again.`;
+                : `API error (${res.status})${detail ? ': ' + detail : ''}`;
       throw new Error(msg);
     }
-    const json = await res.json();
     const text = json.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!text) throw new Error('Empty response from Gemini — please try again.');
     // Strip markdown fences Gemini occasionally wraps around JSON
