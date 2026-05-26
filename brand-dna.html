@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brand DNA Audit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #EDE0C4;
+      --cream-light: #F7F2EA;
+      --red: #C8102E;
+      --red-deep: #A00E24;
+      --dark: #1C1C1C;
+      --mid: #5C5247;
+      --font: 'Outfit', sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--cream);
+      color: var(--dark);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--dark);
+      padding: 36px 40px 32px;
+      border-bottom: 3px solid var(--red);
+    }
+    header h1 {
+      font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+      font-weight: 700;
+      color: var(--cream-light);
+      letter-spacing: -0.02em;
+    }
+    header h1 .accent { color: var(--red); }
+    header p {
+      color: var(--mid);
+      font-size: 0.875rem;
+      margin-top: 6px;
+    }
+
+    /* ── MAIN CONTAINER ── */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* ── ENTRY SECTION ── */
+    #entry-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+    }
+    .entry-card {
+      background: var(--cream-light);
+      border: 1.5px solid var(--cream);
+      border-radius: 16px;
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 4px 24px rgba(28,28,28,0.08);
+    }
+    .entry-card h2 { font-size: 1.15rem; font-weight: 600; margin-bottom: 6px; }
+    .entry-card p  { font-size: 0.875rem; color: var(--mid); margin-bottom: 24px; }
+    .brand-input {
+      width: 100%;
+      padding: 14px 18px;
+      border: 1.5px solid var(--cream);
+      border-radius: 10px;
+      font-family: var(--font);
+      font-size: 1.05rem;
+      background: white;
+      color: var(--dark);
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 14px;
+    }
+    .brand-input:focus { border-color: var(--red); }
+    .btn-primary {
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-family: var(--font);
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 14px 32px;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: var(--red-deep); }
+    .entry-note { text-align: center; font-size: 0.75rem; color: var(--mid); margin-top: 12px; }
+
+    /* ── LOADING ── */
+    #loading-section {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 60px;
+      gap: 20px;
+    }
+    .spinner {
+      width: 48px; height: 48px;
+      border: 3px solid var(--cream);
+      border-top-color: var(--red);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-msg { font-size: 1rem; color: var(--mid); font-weight: 500; min-height: 1.5em; }
+
+    /* ── RESULTS ── */
+    #results-section {
+      display: none;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .results-header h2 { font-size: 1.4rem; font-weight: 700; }
+    .results-header h2 span { color: var(--red); }
+    .btn-reset {
+      background: none;
+      border: 1.5px solid var(--cream);
+      border-radius: 8px;
+      font-family: var(--font);
+      font-size: 0.875rem;
+      color: var(--mid);
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-reset:hover { border-color: var(--red); color: var(--red); }
+
+    /* purpose box */
+    .purpose-box {
+      background: var(--dark);
+      border-left: 4px solid var(--red);
+      border-radius: 10px;
+      padding: 20px 24px;
+    }
+    .purpose-box .eyebrow {
+      font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--red); margin-bottom: 8px;
+    }
+    .purpose-box p { font-size: 1rem; font-style: italic; line-height: 1.6; color: #e8e0d0; }
+    .confidence-note { font-size: 0.75rem; color: var(--mid); margin-top: 8px; font-style: italic; }
+
+    /* ── TOP ROW: pizza + word cloud ── */
+    .top-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 820px) {
+      .top-row { grid-template-columns: 1fr; }
+    }
+
+    /* ── BOTTOM ROW: TP instructions + results ── */
+    .tp-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 820px) {
+      .tp-row { grid-template-columns: 1fr; }
+    }
+
+    .column-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* badge */
+    .badge {
+      display: inline-block;
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .badge-ai { background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; }
+    .badge-tp { background: #E6FAF4; color: #00663E; border: 1px solid #86EFCA; }
+
+    .panel {
+      background: var(--cream-light);
+      border: 1.5px solid var(--cream);
+      border-radius: 16px;
+      padding: 24px 24px 20px;
+      box-shadow: 0 4px 20px rgba(28,28,28,0.06);
+      margin-bottom: 16px;
+    }
+    .panel:last-child { margin-bottom: 0; }
+    .panel-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+    .panel h3 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--dark);
+    }
+    .panel-sub { font-size: 0.78rem; color: var(--mid); margin-bottom: 16px; line-height: 1.4; }
+
+    .pizza-svg { width: 100%; height: auto; display: block; }
+    .wc-canvas  { width: 100%; height: auto; display: block; border-radius: 8px; }
+
+    /* ── TP COLUMN PLACEHOLDER (before enrichment) ── */
+    .tp-placeholder {
+      background: var(--cream-light);
+      border: 1.5px dashed var(--cream);
+      border-radius: 16px;
+      padding: 40px 24px;
+      text-align: center;
+      color: var(--mid);
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+    .tp-placeholder strong { display: block; color: var(--dark); font-size: 1rem; margin-bottom: 8px; }
+
+    /* ── TP THEMES ── */
+    .tp-summary-dark {
+      background: var(--dark);
+      border-left: 4px solid #00B67A;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-bottom: 16px;
+    }
+    .tp-summary-dark .eyebrow {
+      font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: #00B67A; margin-bottom: 8px;
+    }
+    .tp-summary-dark p { font-size: 0.9rem; font-style: italic; line-height: 1.6; color: #e8e0d0; }
+
+    .themes-list { display: flex; flex-direction: column; gap: 10px; }
+    .theme-row {
+      background: white;
+      border: 1.5px solid var(--cream);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+    .theme-rank {
+      font-size: 0.65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--mid); margin-bottom: 2px;
+    }
+    .theme-name { font-size: 0.9rem; font-weight: 700; color: var(--dark); }
+    .theme-desc { font-size: 0.72rem; color: var(--mid); line-height: 1.4; margin-top: 3px; }
+    .sentiment-pill {
+      font-size: 0.68rem; font-weight: 700;
+      border-radius: 20px; padding: 4px 10px;
+      white-space: nowrap; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .sentiment-positive { background: #D1FAE5; color: #065F46; border: 1px solid #6EE7B7; }
+    .sentiment-mixed    { background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; }
+    .sentiment-negative { background: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; }
+
+    /* ── AXES BREAKDOWN ── */
+    .axes-section h3 {
+      font-size: 0.78rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 16px;
+    }
+    .axes-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+    }
+    @media (max-width: 900px) { .axes-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 580px) { .axes-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .axis-card {
+      background: var(--cream-light);
+      border: 1.5px solid var(--cream);
+      border-radius: 12px;
+      padding: 16px 14px;
+    }
+    .axis-label { font-size: 0.8rem; font-weight: 700; margin-bottom: 10px; }
+    .score-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .score-item {}
+    .score-item-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--mid);
+      margin-bottom: 3px;
+    }
+    .score-number {
+      font-size: 1.6rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .score-suffix { font-size: 0.85rem; font-weight: 400; color: var(--mid); }
+    .axis-bar-track {
+      height: 4px;
+      background: var(--cream);
+      border-radius: 3px;
+      margin-top: 4px;
+    }
+    .axis-bar-fill { height: 4px; border-radius: 3px; transition: width 0.8s ease; }
+    .axis-claim    { font-size: 0.7rem; color: var(--mid); font-style: italic; line-height: 1.4; margin-bottom: 5px; }
+    .axis-rationale { font-size: 0.68rem; color: var(--mid); line-height: 1.4; }
+
+    /* ── ENRICHMENT ── */
+    .tp-logo { margin-left: auto; font-size: 0.75rem; color: var(--mid); font-weight: 400; }
+    .enrich-instructions {
+      background: white;
+      border: 1.5px solid var(--cream);
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+    .enrich-instructions ol { padding-left: 18px; font-size: 0.85rem; color: var(--mid); line-height: 1.8; }
+    .enrich-instructions ol li strong { color: var(--dark); }
+    .tp-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #00B67A;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: var(--font);
+      font-size: 0.875rem;
+      font-weight: 700;
+      padding: 10px 18px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+      width: fit-content;
+    }
+    .tp-link-btn:hover { background: #009a68; }
+    .social-textarea {
+      width: 100%;
+      min-height: 140px;
+      padding: 14px;
+      border: 1.5px solid var(--cream);
+      border-radius: 10px;
+      font-family: var(--font);
+      font-size: 0.875rem;
+      color: var(--dark);
+      background: white;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .social-textarea:focus { border-color: var(--red); }
+    .enrich-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .btn-enrich {
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-family: var(--font);
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 12px 24px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-enrich:hover { background: var(--red-deep); }
+    .btn-enrich:disabled { opacity: 0.5; cursor: not-allowed; }
+    .enrich-status { font-size: 0.8rem; color: var(--mid); font-style: italic; }
+
+    /* ── ERROR ── */
+    .error-box {
+      background: #FEF2F2;
+      border: 1.5px solid #FECACA;
+      border-radius: 12px;
+      padding: 20px 24px;
+      color: #991B1B;
+      font-size: 0.9rem;
+      margin-top: 14px;
+    }
+    .error-box strong { display: block; margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Brand <span class="accent">DNA</span> Audit</h1>
+  <p>How well does a brand's stated identity match what consumers actually say?</p>
+</header>
+
+<main>
+
+  <!-- ENTRY -->
+  <section id="entry-section">
+    <div class="entry-card">
+      <h2>Analyse a brand</h2>
+      <p>Enter any brand name. The tool maps their stated DNA against consumer perception using AI analysis.</p>
+      <input type="text" id="brand-input" class="brand-input" placeholder="e.g. Nike, Apple, Patagonia…" autocomplete="off">
+      <button class="btn-primary" id="analyse-btn">Analyse Brand DNA</button>
+      <p class="entry-note">Powered by Gemini AI · Based on AI training knowledge</p>
+    </div>
+  </section>
+
+  <!-- LOADING -->
+  <section id="loading-section">
+    <div class="spinner"></div>
+    <p class="loading-msg" id="loading-msg">Researching brand positioning…</p>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results-section">
+
+    <div class="results-header">
+      <h2>Brand DNA: <span id="results-brand-name"></span></h2>
+      <button class="btn-reset" id="reset-btn">← Analyse another brand</button>
+    </div>
+
+    <!-- PURPOSE -->
+    <div class="purpose-box">
+      <div class="eyebrow">Brand Purpose</div>
+      <p id="brand-purpose"></p>
+      <p class="confidence-note" id="confidence-note"></p>
+    </div>
+
+    <!-- ROW 1: Pizza chart + Word cloud -->
+    <div class="top-row">
+      <div class="panel">
+        <div class="panel-header">
+          <h3>Brand DNA vs Consumer Perception</h3>
+          <span class="badge badge-ai">AI Analysis</span>
+        </div>
+        <p class="panel-sub">Outer ring = brand's full claim (100%). Filled segment = perceived backing score.</p>
+        <svg id="pizza-svg-ai" class="pizza-svg" viewBox="0 0 740 740" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <h3>Consumer Associations</h3>
+          <span class="badge badge-ai">AI Analysis</span>
+        </div>
+        <p class="panel-sub">Words consumers use when talking about this brand across social and review platforms.</p>
+        <canvas id="wc-canvas-ai" class="wc-canvas"></canvas>
+      </div>
+    </div>
+
+    <!-- ROW 2: DNA axis breakdown -->
+    <div class="axes-section">
+      <h3>DNA Axis Breakdown</h3>
+      <div class="axes-grid" id="axes-grid"></div>
+    </div>
+
+    <!-- ROW 3: Trustpilot — instructions left, results right -->
+    <div class="tp-row">
+
+      <!-- LEFT: input panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3>Add Trustpilot Reviews</h3>
+          <span class="tp-logo" style="font-size:0.8rem;color:#00B67A;font-weight:700">★ Trustpilot</span>
+        </div>
+        <p class="panel-sub">Paste real customer reviews to see what people actually talk about — separate from the brand's own positioning.</p>
+        <div class="enrich-instructions" style="margin-bottom:14px">
+          <ol>
+            <li>Click <strong>Open Trustpilot</strong> below — opens the review page in a new tab</li>
+            <li>Press <strong>Cmd+A</strong> to select all, then <strong>Cmd+C</strong> to copy</li>
+            <li>Paste into the box below and hit <strong>Analyse reviews</strong></li>
+          </ol>
+        </div>
+        <a class="tp-link-btn" id="tp-link" href="#" target="_blank" rel="noopener" style="margin-bottom:12px">★ Open Trustpilot ↗</a>
+        <textarea class="social-textarea" id="social-paste" placeholder="Paste Trustpilot page content here…"></textarea>
+        <div class="enrich-actions" style="margin-top:12px">
+          <button class="btn-enrich" id="enrich-btn">Analyse reviews</button>
+          <span class="enrich-status" id="enrich-status"></span>
+        </div>
+      </div>
+
+      <!-- RIGHT: results panel -->
+      <div id="tp-results">
+        <!-- placeholder before enrichment -->
+        <div class="tp-placeholder" id="tp-placeholder">
+          <strong>Trustpilot analysis will appear here</strong>
+          Follow the steps on the left to add real customer review data.
+        </div>
+        <!-- populated after enrichment -->
+        <div id="tp-charts" style="display:none">
+          <div class="tp-summary-dark">
+            <div class="eyebrow">★ Trustpilot — Review Summary</div>
+            <p id="tp-summary-text"></p>
+          </div>
+          <div class="panel" style="margin-top:16px">
+            <div class="panel-header">
+              <h3>What customers actually talk about</h3>
+            </div>
+            <p class="panel-sub">Top themes from real reviews — ranked by frequency.</p>
+            <div class="themes-list" id="tp-themes-list"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+  const GEMINI_API_KEY = 'AIzaSyDJUoEmXU9doxBOjBJ3LjPJu_wapYsswiI';
+  const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+  const WEDGE_COLORS = ['#C8102E', '#3B9E8E', '#4A7FB5', '#E8A838', '#B07A8A'];
+
+  // ── STATE ──
+  let currentData = null; // AI phase 1 data (never mutated)
+  let tpData      = null; // Trustpilot enrichment data
+
+  // ── ELEMENTS ──
+  const entrySection   = document.getElementById('entry-section');
+  const loadingSection = document.getElementById('loading-section');
+  const resultsSection = document.getElementById('results-section');
+  const brandInput     = document.getElementById('brand-input');
+  const analyseBtn     = document.getElementById('analyse-btn');
+  const loadingMsg     = document.getElementById('loading-msg');
+  const resetBtn       = document.getElementById('reset-btn');
+
+  // ── UI STATE ──
+  function showEntry() {
+    entrySection.style.display   = 'flex';
+    loadingSection.style.display = 'none';
+    resultsSection.style.display = 'none';
+  }
+  function showLoading() {
+    entrySection.style.display   = 'none';
+    loadingSection.style.display = 'flex';
+    resultsSection.style.display = 'none';
+    const msgs = ['Researching brand positioning…','Analysing consumer associations…','Scoring DNA alignment…','Building your audit…'];
+    let i = 0;
+    loadingMsg.textContent = msgs[0];
+    const iv = setInterval(() => { i = (i+1) % msgs.length; loadingMsg.textContent = msgs[i]; }, 1800);
+    return iv;
+  }
+  function showResults() {
+    entrySection.style.display   = 'none';
+    loadingSection.style.display = 'none';
+    resultsSection.style.display = 'flex';
+  }
+
+  // ── GEMINI CALL ──
+  async function callGemini(prompt, attempt = 1) {
+    const res = await fetch(GEMINI_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { responseMimeType: 'application/json' }
+      })
+    });
+    if (res.status === 503 && attempt === 1) {
+      loadingMsg.textContent = 'Server busy, retrying…';
+      document.getElementById('enrich-status').textContent = 'Server busy, retrying…';
+      await new Promise(r => setTimeout(r, 3000));
+      return callGemini(prompt, 2);
+    }
+    if (!res.ok) {
+      const msg = res.status === 429 ? 'Too many requests — please wait a moment and try again.'
+                : res.status >= 500  ? 'Gemini servers are temporarily busy. Please try again in a few seconds.'
+                : `API error (${res.status}). Please try again.`;
+      throw new Error(msg);
+    }
+    const json = await res.json();
+    const text = json.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!text) throw new Error('Empty response from Gemini — please try again.');
+    // Strip markdown fences Gemini occasionally wraps around JSON
+    const clean = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
+    return JSON.parse(clean);
+  }
+
+  // ── PROMPTS ──
+  function buildPrompt(brandName) {
+    return `You are a brand strategy expert with deep knowledge of brand positioning, consumer perception, and social media sentiment.
+
+Analyse the brand "${brandName}" and return a JSON object with EXACTLY this structure:
+
+{
+  "brandName": "string — official brand name",
+  "brandPurpose": "string — 1-2 sentences on the brand's stated mission or purpose",
+  "dnaAxes": [
+    {
+      "label": "string — 2-3 word dimension name",
+      "claim": "string — what the brand explicitly claims about this dimension",
+      "aiSocialScore": number 0-100,
+      "aiSocialRationale": "string — 1 sentence explaining the score"
+    }
+  ],
+  "wordCloudTerms": [{ "word": "string", "weight": number 1-10 }],
+  "confidenceNote": "string — brief note on brand familiarity and confidence"
+}
+
+RULES:
+- dnaAxes: EXACTLY 5 items. Choose the 5 most strategically significant dimensions.
+- aiSocialScore: 80-100 consumers actively echo this; 50-79 partial backing; 20-49 weak backing; 0-19 contradicted or invisible.
+- wordCloudTerms: EXACTLY 20 items. Words consumers use online. Weight 10 = most prominent. Exclude brand name.
+- Return ONLY valid JSON, no markdown, no explanation.`;
+  }
+
+  function buildEnrichPrompt(brandName, pastedText) {
+    return `You are a brand analyst. Brand being analysed: "${brandName}".
+
+Below is raw text pasted from a Trustpilot review page. Extract only customer review content; ignore navigation, timestamps, usernames, star rating labels, and UI chrome.
+
+---
+${pastedText.slice(0, 12000)}
+---
+
+Analyse what customers are actually writing about and return a JSON object with EXACTLY this structure:
+
+{
+  "reviewSummary": "string — 2-3 sentences describing the overall tone and the most prominent customer concerns or praises",
+  "themes": [
+    {
+      "rank": number 1-5,
+      "name": "string — short theme name (2-4 words, e.g. 'Delivery Speed', 'Customer Service', 'Product Quality')",
+      "description": "string — 1 sentence on what customers say about this theme",
+      "sentiment": "positive" | "mixed" | "negative"
+    }
+  ],
+  "wordCloudTerms": [{ "word": "string", "weight": number 1-10 }]
+}
+
+RULES:
+- themes: EXACTLY 5 items ranked 1-5 by how frequently this theme appears in the reviews. These must reflect what customers actually write about — not the brand's own positioning.
+- sentiment: "positive" if most mentions are favourable, "negative" if mostly critical, "mixed" if split.
+- wordCloudTerms: EXACTLY 20 items — most prominent words/phrases from the review text. Weight 10 = most frequent. Exclude brand name.
+- Return ONLY valid JSON, no markdown, no explanation.`;
+  }
+
+  // ── PIZZA CHART ──
+  function drawPizzaChart(svgEl, axes, scoreKey) {
+    svgEl.innerHTML = '';
+    // Large viewBox gives generous margin for labels on all sides
+    const VB = 740;
+    const CX = VB / 2, CY = VB / 2, R = 270;
+    svgEl.setAttribute('viewBox', `0 0 ${VB} ${VB}`);
+    const N = axes.length;
+    const sliceAngle = (2 * Math.PI) / N;
+    const ns = 'http://www.w3.org/2000/svg';
+
+    function mk(tag, attrs) {
+      const el = document.createElementNS(ns, tag);
+      for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+      return el;
+    }
+
+    svgEl.appendChild(mk('circle', { cx: CX, cy: CY, r: R, fill: 'white', opacity: '0.5' }));
+
+    for (const frac of [0.25, 0.5, 0.75, 1.0]) {
+      svgEl.appendChild(mk('circle', {
+        cx: CX, cy: CY, r: R * frac,
+        fill: 'none',
+        stroke: frac === 1.0 ? '#1C1C1C' : '#D4C9B0',
+        'stroke-width': frac === 1.0 ? '2' : '1',
+        'stroke-dasharray': frac === 1.0 ? 'none' : '4 4'
+      }));
+    }
+
+    for (let i = 0; i < N; i++) {
+      const angle = sliceAngle * i - Math.PI / 2;
+      svgEl.appendChild(mk('line', {
+        x1: CX, y1: CY,
+        x2: CX + R * Math.cos(angle), y2: CY + R * Math.sin(angle),
+        stroke: '#1C1C1C', 'stroke-width': '1.5'
+      }));
+    }
+
+    axes.forEach((axis, i) => {
+      const rawScore   = axis[scoreKey] ?? 0;
+      const score      = Math.max(2, rawScore);
+      const r          = R * (score / 100);
+      const startAngle = sliceAngle * i - Math.PI / 2;
+      const endAngle   = startAngle + sliceAngle;
+      const largeArc   = sliceAngle > Math.PI ? 1 : 0;
+      const color      = WEDGE_COLORS[i % WEDGE_COLORS.length];
+
+      const x1 = CX + r * Math.cos(startAngle), y1 = CY + r * Math.sin(startAngle);
+      const x2 = CX + r * Math.cos(endAngle),   y2 = CY + r * Math.sin(endAngle);
+
+      svgEl.appendChild(mk('path', {
+        d: `M ${CX} ${CY} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`,
+        fill: color, opacity: '0.88', stroke: 'white', 'stroke-width': '1.5'
+      }));
+
+      const midAngle = startAngle + sliceAngle / 2;
+      if (score > 12) {
+        const lt = mk('text', {
+          x: CX + r * 0.6 * Math.cos(midAngle),
+          y: CY + r * 0.6 * Math.sin(midAngle),
+          'text-anchor': 'middle', 'dominant-baseline': 'central',
+          fill: 'white', 'font-family': "'Outfit',sans-serif", 'font-size': '15', 'font-weight': '700'
+        });
+        lt.textContent = rawScore;
+        svgEl.appendChild(lt);
+      }
+
+      // Label position — push outward from ring edge
+      const labelR  = R + 38;
+      const lx = CX + labelR * Math.cos(midAngle);
+      const ly = CY + labelR * Math.sin(midAngle);
+      const anchor = lx < CX - 8 ? 'end' : lx > CX + 8 ? 'start' : 'middle';
+
+      // Break label into lines of max ~12 chars each so font stays large
+      const allWords = axis.label.split(' ');
+      const lines = [];
+      let current = '';
+      for (const w of allWords) {
+        const candidate = current ? `${current} ${w}` : w;
+        if (candidate.length > 12 && current) {
+          lines.push(current);
+          current = w;
+        } else {
+          current = candidate;
+        }
+      }
+      if (current) lines.push(current);
+
+      const fontSize = '13';
+      const lineH    = 16;
+      const startY   = ly - ((lines.length - 1) * lineH) / 2;
+
+      lines.forEach((line, li) => {
+        const t = mk('text', {
+          x: lx, y: startY + li * lineH,
+          'text-anchor': anchor, 'dominant-baseline': 'central',
+          fill: '#1C1C1C', 'font-family': "'Outfit',sans-serif",
+          'font-size': fontSize, 'font-weight': '700'
+        });
+        t.textContent = line;
+        svgEl.appendChild(t);
+      });
+    });
+
+    svgEl.appendChild(mk('circle', { cx: CX, cy: CY, r: 18, fill: 'white', stroke: '#EDE0C4', 'stroke-width': '2' }));
+  }
+
+  // ── WORD CLOUD ──
+  function drawWordCloud(canvas, terms) {
+    const W = 680, H = 300;
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#F7F2EA';
+    ctx.fillRect(0, 0, W, H);
+
+    const sorted = [...terms].sort((a, b) => b.weight - a.weight);
+    const placed = [];
+    const cx = W / 2, cy = H / 2;
+
+    for (const term of sorted) {
+      const size  = 13 + ((term.weight - 1) / 9) * 39;
+      const bold  = term.weight >= 6 ? '700' : '400';
+      const color = term.weight >= 8 ? '#C8102E' : term.weight >= 5 ? '#1C1C1C' : '#5C5247';
+      ctx.font = `${bold} ${size}px 'Outfit', sans-serif`;
+      const tw = ctx.measureText(term.word).width;
+      const th = size * 1.15;
+
+      for (let t = 0; t < 1200; t++) {
+        const angle = 0.22 * t;
+        const r     = 2.2 * angle;
+        const x     = cx + r * Math.cos(angle) - tw / 2;
+        const y     = cy + r * Math.sin(angle) - th / 2;
+        if (x < 6 || x + tw > W - 6 || y < 6 || y + th > H - 6) continue;
+        const hit = placed.some(p => x < p.x+p.w+4 && x+tw+4 > p.x && y < p.y+p.h+2 && y+th+2 > p.y);
+        if (!hit) {
+          ctx.fillStyle = color;
+          ctx.fillText(term.word, x, y + size);
+          placed.push({ x, y, w: tw, h: th });
+          break;
+        }
+      }
+    }
+  }
+
+  // ── AXES CARDS ──
+  function renderAxesCards() {
+    const grid = document.getElementById('axes-grid');
+    grid.innerHTML = '';
+    currentData.dnaAxes.forEach((axis, i) => {
+      const color    = WEDGE_COLORS[i % WEDGE_COLORS.length];
+      const score    = axis.aiSocialScore;
+      const barColor = score >= 70 ? '#10B981' : score >= 40 ? '#F59E0B' : '#C8102E';
+
+      const card = document.createElement('div');
+      card.className = 'axis-card';
+      card.style.borderTop = `3px solid ${color}`;
+      card.innerHTML = `
+        <div class="axis-label" style="color:${color}">${axis.label}</div>
+        <div class="score-number" style="color:${color};font-size:2rem;font-weight:700;line-height:1;margin-bottom:6px">
+          ${score}<span style="font-size:0.85rem;font-weight:400;color:var(--mid)">%</span>
+        </div>
+        <div class="axis-bar-track"><div class="axis-bar-fill" style="width:${score}%;background:${barColor}"></div></div>
+        <div class="axis-claim" style="margin-top:8px">"${axis.claim}"</div>
+        <div class="axis-rationale" style="margin-top:5px">${axis.aiSocialRationale}</div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  // ── MAIN ANALYSE ──
+  async function analyse() {
+    const brand = brandInput.value.trim();
+    if (!brand) { brandInput.focus(); return; }
+
+    const iv = showLoading();
+    try {
+      const data = await callGemini(buildPrompt(brand));
+      currentData = data;
+      tpData = null;
+      clearInterval(iv);
+
+      document.getElementById('results-brand-name').textContent = data.brandName || brand;
+      document.getElementById('brand-purpose').textContent      = data.brandPurpose || '';
+      document.getElementById('confidence-note').textContent    = data.confidenceNote ? `Note: ${data.confidenceNote}` : '';
+
+      // Reset TP column to placeholder
+      document.getElementById('tp-placeholder').style.display = '';
+      document.getElementById('tp-charts').style.display = 'none';
+
+      updateTpLink(data.brandName || brand);
+      showResults();
+
+      drawPizzaChart(document.getElementById('pizza-svg-ai'), data.dnaAxes, 'aiSocialScore');
+      renderAxesCards();
+      document.fonts.ready.then(() => drawWordCloud(document.getElementById('wc-canvas-ai'), data.wordCloudTerms));
+
+    } catch (err) {
+      clearInterval(iv);
+      showEntry();
+      const existing = document.querySelector('.error-box');
+      if (existing) existing.remove();
+      const box = document.createElement('div');
+      box.className = 'error-box';
+      box.innerHTML = `<strong>Something went wrong</strong>${err.message}`;
+      document.querySelector('.entry-card').appendChild(box);
+    }
+  }
+
+  // ── RENDER TP THEMES ──
+  function renderTpThemes(themes) {
+    const list = document.getElementById('tp-themes-list');
+    list.innerHTML = '';
+    themes.forEach(theme => {
+      const pillClass = theme.sentiment === 'positive' ? 'sentiment-positive'
+                      : theme.sentiment === 'negative' ? 'sentiment-negative'
+                      : 'sentiment-mixed';
+      const row = document.createElement('div');
+      row.className = 'theme-row';
+      row.innerHTML = `
+        <div>
+          <div class="theme-rank">#${theme.rank}</div>
+          <div class="theme-name">${theme.name}</div>
+          <div class="theme-desc">${theme.description}</div>
+        </div>
+        <span class="sentiment-pill ${pillClass}">${theme.sentiment}</span>
+      `;
+      list.appendChild(row);
+    });
+  }
+
+  // ── ENRICH (TP) ──
+  async function enrich() {
+    const text = document.getElementById('social-paste').value.trim();
+    if (!text) { document.getElementById('enrich-status').textContent = 'Please paste some review text first.'; return; }
+    if (!currentData) return;
+
+    const btn = document.getElementById('enrich-btn');
+    const status = document.getElementById('enrich-status');
+    btn.disabled = true;
+    status.textContent = 'Analysing reviews…';
+
+    try {
+      const data = await callGemini(buildEnrichPrompt(currentData.brandName, text));
+      tpData = data;
+
+      // Show TP results column
+      document.getElementById('tp-placeholder').style.display = 'none';
+      document.getElementById('tp-charts').style.display = '';
+
+      // Summary
+      document.getElementById('tp-summary-text').textContent = data.reviewSummary || '';
+
+      // Themes
+      renderTpThemes(data.themes || []);
+
+      status.textContent = '✓ Trustpilot analysis added';
+      btn.disabled = false;
+
+    } catch (err) {
+      status.textContent = `Error: ${err.message}`;
+      btn.disabled = false;
+    }
+  }
+
+  // ── EVENT LISTENERS ──
+  analyseBtn.addEventListener('click', analyse);
+  brandInput.addEventListener('keydown', e => { if (e.key === 'Enter') analyse(); });
+
+  resetBtn.addEventListener('click', () => {
+    currentData = null; tpData = null;
+    brandInput.value = '';
+    document.querySelector('.error-box')?.remove();
+    document.getElementById('social-paste').value = '';
+    document.getElementById('enrich-status').textContent = '';
+    document.getElementById('tp-placeholder').style.display = '';
+    document.getElementById('tp-charts').style.display = 'none';
+    showEntry();
+  });
+
+  document.getElementById('enrich-btn').addEventListener('click', enrich);
+
+  function updateTpLink(brandName) {
+    const slug = brandName.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+    document.getElementById('tp-link').href = `https://www.trustpilot.com/review/${slug}.com`;
+  }
+
+  showEntry();
+</script>
+</body>
+</html>
