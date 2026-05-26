@@ -9,23 +9,51 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    // Force JSON mime type regardless of what the client sent
+    const body = {
+      ...req.body,
+      generationConfig: {
+        ...(req.body.generationConfig || {}),
+        responseMimeType: 'application/json'
+      }
+    };
+
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(req.body)
+        body: JSON.stringify(body)
       }
     );
 
     const data = await response.json();
 
-    // Pass Gemini's full error back so we can see what's wrong
     if (!response.ok) {
       return res.status(response.status).json({
         error: `Gemini returned ${response.status}`,
         detail: data
       });
+    }
+
+    // Extract and validate JSON from the text before returning
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (text) {
+      const start = text.indexOf('{');
+      const end   = text.lastIndexOf('}');
+      if (start !== -1 && end !== -1) {
+        const extracted = text.slice(start, end + 1)
+          .replace(/\/\/[^\n]*/g, '')
+          .replace(/\/\*[\s\S]*?\*\//g, '')
+          .replace(/,\s*([}\]])/g, '$1');
+        try {
+          // Validate it parses, then return the cleaned text
+          JSON.parse(extracted);
+          data.candidates[0].content.parts[0].text = extracted;
+        } catch (e) {
+          // Return raw text and let client handle the error
+        }
+      }
     }
 
     return res.status(200).json(data);
