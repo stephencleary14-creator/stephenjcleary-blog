@@ -604,14 +604,15 @@
     }
     const text = json.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!text) throw new Error('Empty response from Gemini — please try again.');
-    // Strip markdown fences, comments, and trailing commas Gemini occasionally adds
-    const clean = text
-      .replace(/^```(?:json)?\s*/i, '')   // opening fence
-      .replace(/\s*```\s*$/i, '')          // closing fence
+    // Extract the JSON object robustly — find outermost { } and clean noise inside
+    const start = text.indexOf('{');
+    const end   = text.lastIndexOf('}');
+    if (start === -1 || end === -1) throw new Error('No JSON found in Gemini response — please try again.');
+    const extracted = text.slice(start, end + 1);
+    const clean = extracted
       .replace(/\/\/[^\n]*/g, '')          // // line comments
       .replace(/\/\*[\s\S]*?\*\//g, '')    // /* block comments */
-      .replace(/,\s*([}\]])/g, '$1')       // trailing commas before } or ]
-      .trim();
+      .replace(/,\s*([}\]])/g, '$1');      // trailing commas
     return JSON.parse(clean);
   }
 
