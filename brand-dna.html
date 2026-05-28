@@ -446,6 +446,34 @@
     .toggle-btn:hover { background: var(--cream); color: var(--dark); }
     .toggle-active { background: var(--dark) !important; color: white !important; }
 
+    /* ── COMPETITOR SCORE TABLE ── */
+    #competitor-table { margin-top: 20px; padding-top: 16px; border-top: 1.5px solid var(--cream); display: none; }
+    .comp-table-header {
+      display: grid;
+      grid-template-columns: 1fr 120px 120px;
+      gap: 8px;
+      padding: 0 4px 6px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--mid);
+    }
+    .comp-table-header span:not(:first-child) { text-align: center; }
+    .comp-row {
+      display: grid;
+      grid-template-columns: 1fr 120px 120px;
+      gap: 8px;
+      align-items: center;
+      padding: 7px 4px;
+      border-top: 1px solid var(--cream);
+    }
+    .comp-row-label { font-size: 0.8rem; font-weight: 600; color: var(--dark); }
+    .comp-bar-cell { display: flex; align-items: center; gap: 6px; }
+    .comp-bar-track { flex: 1; height: 8px; background: var(--cream); border-radius: 4px; overflow: hidden; }
+    .comp-bar-fill { height: 100%; border-radius: 4px; }
+    .comp-score { font-size: 0.78rem; font-weight: 700; color: var(--dark); width: 22px; text-align: right; flex-shrink: 0; }
+
     /* ── ERROR ── */
     .error-box {
       background: #FEF2F2;
@@ -546,6 +574,15 @@
           </div>
           <div id="competitor-loading" style="display:none;font-size:0.8rem;color:var(--mid);font-style:italic;margin-top:8px">Analysing competitor…</div>
           <p id="competitor-note" style="display:none;font-size:0.78rem;color:var(--mid);margin-top:8px;font-style:italic"></p>
+          <!-- Score comparison table — shown after competitor loads -->
+          <div id="competitor-table">
+            <div class="comp-table-header">
+              <span>Axis</span>
+              <span id="comp-header-a"></span>
+              <span id="comp-header-b"></span>
+            </div>
+            <div id="comp-rows"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -816,13 +853,18 @@ RULES:
       }));
     }
 
-    // ── Brand A wedges ──
-    axes.forEach((axis, i) => {
-      const rawScore = axis[scoreKey] ?? 0;
+    // ── Wedges: solo = Brand A coloured, compare = Brand B grey only ──
+    const wedgeAxes = isCompare
+      ? competitorData.scores.map(s => ({ label: axes[competitorData.scores.indexOf(s)]?.label || '', score: s.score }))
+      : axes;
+
+    const wedgeSrc = isCompare ? competitorData.scores : axes;
+
+    wedgeSrc.forEach((item, i) => {
+      const rawScore = isCompare ? (item.score ?? 0) : (item[scoreKey] ?? 0);
       const { path, mid, r } = wedgePath(rawScore, i);
-      // Brand A always keeps its colours; opacity drops slightly in compare mode to let Brand B sit alongside
-      const color = WEDGE_COLORS[i % WEDGE_COLORS.length];
-      const opacity = isCompare ? '0.75' : '0.88';
+      const color   = isCompare ? '#9E9589' : WEDGE_COLORS[i % WEDGE_COLORS.length];
+      const opacity = isCompare ? '0.65' : '0.88';
 
       svgEl.appendChild(mk('path', { d: path, fill: color, opacity, stroke: 'white', 'stroke-width': '1.5' }));
 
@@ -836,13 +878,14 @@ RULES:
         svgEl.appendChild(lt);
       }
 
-      // Axis labels
+      // Axis labels (always use Brand A's axis labels for context)
+      const axisLabel = axes[i]?.label || '';
       const labelR = R + 38;
       const lx = CX + labelR * Math.cos(mid);
       const ly = CY + labelR * Math.sin(mid);
       const anchor = lx < CX - 8 ? 'end' : lx > CX + 8 ? 'start' : 'middle';
 
-      const allWords = axis.label.split(' ');
+      const allWords = axisLabel.split(' ');
       const lines = [];
       let current = '';
       for (const w of allWords) {
@@ -864,68 +907,6 @@ RULES:
         svgEl.appendChild(t);
       });
     });
-
-    // ── Brand B wedges (compare mode only) — grey ──
-    if (isCompare) {
-      competitorData.scores.forEach((item, i) => {
-        const rawScore = item.score ?? 0;
-        const { path, mid, r } = wedgePath(rawScore, i);
-
-        svgEl.appendChild(mk('path', { d: path, fill: '#9E9589', opacity: '0.5', stroke: 'white', 'stroke-width': '2' }));
-
-        if (Math.max(2, rawScore) > 12) {
-          const lt = mk('text', {
-            x: CX + r * 0.6 * Math.cos(mid), y: CY + r * 0.6 * Math.sin(mid),
-            'text-anchor': 'middle', 'dominant-baseline': 'central',
-            fill: 'white', 'font-family': "'Outfit',sans-serif", 'font-size': '14', 'font-weight': '700'
-          });
-          lt.textContent = rawScore;
-          svgEl.appendChild(lt);
-        }
-      });
-
-      // ── Legend: one row per axis ──
-      const brandAName = currentData?.brandName || 'Brand A';
-      const brandBName = competitorData?.competitorName || 'Competitor';
-      const legendX = CX - 180;
-      const legendStartY = VB - 110;
-      const rowH = 20;
-
-      // Header labels
-      const headerA = mk('text', { x: legendX + 155, y: legendStartY - 6, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: '#5C5247', 'font-family': "'Outfit',sans-serif", 'font-size': '11', 'font-weight': '700' });
-      headerA.textContent = brandAName;
-      svgEl.appendChild(headerA);
-
-      const headerB = mk('text', { x: legendX + 315, y: legendStartY - 6, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: '#5C5247', 'font-family': "'Outfit',sans-serif", 'font-size': '11', 'font-weight': '700' });
-      headerB.textContent = brandBName;
-      svgEl.appendChild(headerB);
-
-      axes.forEach((axis, i) => {
-        const color   = WEDGE_COLORS[i % WEDGE_COLORS.length];
-        const scoreA  = axis[scoreKey] ?? 0;
-        const scoreB  = competitorData.scores[i]?.score ?? 0;
-        const ry      = legendStartY + i * rowH;
-
-        // Axis name
-        const lbl = mk('text', { x: legendX, y: ry + 2, 'text-anchor': 'start', 'dominant-baseline': 'central', fill: '#1C1C1C', 'font-family': "'Outfit',sans-serif", 'font-size': '11', 'font-weight': '600' });
-        lbl.textContent = axis.label;
-        svgEl.appendChild(lbl);
-
-        // Brand A bar (colour)
-        svgEl.appendChild(mk('rect', { x: legendX + 110, y: ry - 5, width: 90, height: 11, fill: '#E8E3DA', rx: '3' }));
-        svgEl.appendChild(mk('rect', { x: legendX + 110, y: ry - 5, width: Math.round(90 * scoreA / 100), height: 11, fill: color, rx: '3', opacity: '0.85' }));
-        const sA = mk('text', { x: legendX + 207, y: ry + 2, 'text-anchor': 'start', 'dominant-baseline': 'central', fill: '#5C5247', 'font-family': "'Outfit',sans-serif", 'font-size': '10', 'font-weight': '700' });
-        sA.textContent = scoreA;
-        svgEl.appendChild(sA);
-
-        // Brand B bar (grey)
-        svgEl.appendChild(mk('rect', { x: legendX + 230, y: ry - 5, width: 90, height: 11, fill: '#E8E3DA', rx: '3' }));
-        svgEl.appendChild(mk('rect', { x: legendX + 230, y: ry - 5, width: Math.round(90 * scoreB / 100), height: 11, fill: '#9E9589', rx: '3' }));
-        const sB = mk('text', { x: legendX + 327, y: ry + 2, 'text-anchor': 'start', 'dominant-baseline': 'central', fill: '#5C5247', 'font-family': "'Outfit',sans-serif", 'font-size': '10', 'font-weight': '700' });
-        sB.textContent = scoreB;
-        svgEl.appendChild(sB);
-      });
-    }
 
     svgEl.appendChild(mk('circle', { cx: CX, cy: CY, r: 18, fill: 'white', stroke: '#EDE0C4', 'stroke-width': '2' }));
   }
@@ -1038,6 +1019,7 @@ RULES:
       document.getElementById('competitor-input').value = '';
       document.getElementById('competitor-note').style.display = 'none';
       document.getElementById('competitor-loading').style.display = 'none';
+      document.getElementById('competitor-table').style.display = 'none';
       document.getElementById('competitor-section').style.display = '';
 
       drawPizzaChart(document.getElementById('pizza-svg-ai'), data.dnaAxes, 'aiSocialScore');
@@ -1117,6 +1099,38 @@ RULES:
     }
   }
 
+  // ── COMPETITOR SCORE TABLE ──
+  function renderCompetitorTable() {
+    const brandAName = currentData.brandName;
+    const brandBName = competitorData.competitorName;
+    document.getElementById('comp-header-a').textContent = brandAName;
+    document.getElementById('comp-header-b').textContent = brandBName;
+
+    const rows = document.getElementById('comp-rows');
+    rows.innerHTML = '';
+    currentData.dnaAxes.forEach((axis, i) => {
+      const scoreA = axis.aiSocialScore ?? 0;
+      const scoreB = competitorData.scores[i]?.score ?? 0;
+      const color  = WEDGE_COLORS[i % WEDGE_COLORS.length];
+      const row = document.createElement('div');
+      row.className = 'comp-row';
+      row.innerHTML = `
+        <div class="comp-row-label">${axis.label}</div>
+        <div class="comp-bar-cell">
+          <div class="comp-bar-track"><div class="comp-bar-fill" style="width:${scoreA}%;background:${color}"></div></div>
+          <span class="comp-score">${scoreA}</span>
+        </div>
+        <div class="comp-bar-cell">
+          <div class="comp-bar-track"><div class="comp-bar-fill" style="width:${scoreB}%;background:#9E9589"></div></div>
+          <span class="comp-score">${scoreB}</span>
+        </div>
+      `;
+      rows.appendChild(row);
+    });
+
+    document.getElementById('competitor-table').style.display = '';
+  }
+
   // ── CHART VIEW TOGGLE ──
   let chartView = 'v1'; // 'v1' = solo, 'v2' = compare
 
@@ -1149,12 +1163,12 @@ RULES:
       const data = await callGemini(buildCompetitorPrompt(brandB, axisLabels, currentData.brandName));
       competitorData = data;
 
-      // Show toggle and switch to compare view
-      const toggle = document.getElementById('pizza-toggle');
-      toggle.style.display = '';
+      // Show toggle, switch to compare view, render score table
+      document.getElementById('pizza-toggle').style.display = '';
       setChartView('v2');
+      renderCompetitorTable();
 
-      note.textContent = `Toggle between solo view and ${currentData.brandName} vs ${data.competitorName} above the chart.`;
+      note.textContent = `Toggle above the chart to switch between ${currentData.brandName} solo and vs ${data.competitorName}.`;
       note.style.display = '';
 
     } catch (err) {
@@ -1181,6 +1195,7 @@ RULES:
     document.getElementById('tp-charts').style.display = 'none';
     document.getElementById('competitor-input').value = '';
     document.getElementById('competitor-note').style.display = 'none';
+    document.getElementById('competitor-table').style.display = 'none';
     document.getElementById('competitor-section').style.display = 'none';
     document.getElementById('pizza-toggle').style.display = 'none';
     document.getElementById('toggle-v1').classList.add('toggle-active');
