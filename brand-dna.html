@@ -473,6 +473,10 @@
     .comp-bar-track { flex: 1; height: 8px; background: var(--cream); border-radius: 4px; overflow: hidden; }
     .comp-bar-fill { height: 100%; border-radius: 4px; }
     .comp-score { font-size: 0.78rem; font-weight: 700; color: var(--dark); width: 22px; text-align: right; flex-shrink: 0; }
+    .comp-diff { font-size: 0.72rem; font-weight: 700; min-width: 36px; text-align: right; flex-shrink: 0; }
+    .comp-diff-pos { color: #059669; }
+    .comp-diff-neg { color: #C8102E; }
+    .comp-diff-zero { color: var(--mid); }
 
     /* ── ERROR ── */
     .error-box {
@@ -1114,6 +1118,9 @@ RULES:
       const color  = WEDGE_COLORS[i % WEDGE_COLORS.length];
       const row = document.createElement('div');
       row.className = 'comp-row';
+      const diff = scoreA - scoreB;
+      const diffClass = diff > 0 ? 'comp-diff-pos' : diff < 0 ? 'comp-diff-neg' : 'comp-diff-zero';
+      const diffText  = diff > 0 ? `+${diff}` : diff < 0 ? `${diff}` : '—';
       row.innerHTML = `
         <div class="comp-row-label">${axis.label}</div>
         <div class="comp-bar-cell">
@@ -1123,6 +1130,7 @@ RULES:
         <div class="comp-bar-cell">
           <div class="comp-bar-track"><div class="comp-bar-fill" style="width:${scoreB}%;background:#9E9589"></div></div>
           <span class="comp-score">${scoreB}</span>
+          <span class="comp-diff ${diffClass}">${diffText}</span>
         </div>
       `;
       rows.appendChild(row);
@@ -1162,6 +1170,10 @@ RULES:
       const axisLabels = currentData.dnaAxes.map(a => a.label);
       const data = await callGemini(buildCompetitorPrompt(brandB, axisLabels, currentData.brandName));
       competitorData = data;
+
+      // Label toggle buttons with actual brand names
+      document.getElementById('toggle-v1').textContent = currentData.brandName;
+      document.getElementById('toggle-v2').textContent = data.competitorName;
 
       // Show toggle, switch to compare view, render score table
       document.getElementById('pizza-toggle').style.display = '';
