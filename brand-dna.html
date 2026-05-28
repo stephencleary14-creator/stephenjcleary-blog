@@ -424,6 +424,28 @@
     .btn-enrich:disabled { opacity: 0.5; cursor: not-allowed; }
     .enrich-status { font-size: 0.8rem; color: var(--mid); font-style: italic; }
 
+    /* ── CHART TOGGLE ── */
+    .toggle-group {
+      display: inline-flex;
+      border: 1.5px solid var(--cream);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .toggle-btn {
+      background: white;
+      border: none;
+      font-family: var(--font);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--mid);
+      padding: 7px 16px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .toggle-btn + .toggle-btn { border-left: 1.5px solid var(--cream); }
+    .toggle-btn:hover { background: var(--cream); color: var(--dark); }
+    .toggle-active { background: var(--dark) !important; color: white !important; }
+
     /* ── ERROR ── */
     .error-box {
       background: #FEF2F2;
@@ -485,7 +507,14 @@
           <h3>Brand DNA vs Consumer Perception</h3>
           <span class="badge badge-ai">AI Analysis</span>
         </div>
-        <p class="panel-sub">Outer ring = brand's full claim (100%). Filled segment = perceived backing score.</p>
+        <p class="panel-sub" id="pizza-sub">Outer ring = brand's full claim (100%). Filled segment = perceived backing score.</p>
+        <!-- Toggle — only shown once competitor is loaded -->
+        <div id="pizza-toggle" style="display:none;margin-bottom:12px;display:none">
+          <div class="toggle-group">
+            <button class="toggle-btn toggle-active" id="toggle-v1" onclick="setChartView('v1')">Brand A only</button>
+            <button class="toggle-btn" id="toggle-v2" onclick="setChartView('v2')">vs Competitor</button>
+          </div>
+        </div>
         <svg id="pizza-svg-ai" class="pizza-svg" viewBox="0 0 740 740" xmlns="http://www.w3.org/2000/svg"></svg>
       </div>
       <div class="panel">
@@ -739,9 +768,9 @@ RULES:
   }
 
   // ── PIZZA CHART ──
-  function drawPizzaChart(svgEl, axes, scoreKey, overlayScores = null) {
+  // mode: 'solo' = Brand A only (multicolour), 'compare' = Brand A grey + Brand B coloured
+  function drawPizzaChart(svgEl, axes, scoreKey, mode = 'solo') {
     svgEl.innerHTML = '';
-    // Large viewBox gives generous margin for labels on all sides
     const VB = 740;
     const CX = VB / 2, CY = VB / 2, R = 270;
     svgEl.setAttribute('viewBox', `0 0 ${VB} ${VB}`);
@@ -749,18 +778,29 @@ RULES:
     const sliceAngle = (2 * Math.PI) / N;
     const ns = 'http://www.w3.org/2000/svg';
 
+    const isCompare = mode === 'compare' && competitorData?.scores?.length;
+
     function mk(tag, attrs) {
       const el = document.createElementNS(ns, tag);
       for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
       return el;
     }
 
+    function wedgePath(score, i) {
+      const r = R * (Math.max(2, score) / 100);
+      const sa = sliceAngle * i - Math.PI / 2;
+      const ea = sa + sliceAngle;
+      const la = sliceAngle > Math.PI ? 1 : 0;
+      const x1 = CX + r * Math.cos(sa), y1 = CY + r * Math.sin(sa);
+      const x2 = CX + r * Math.cos(ea), y2 = CY + r * Math.sin(ea);
+      return { path: `M ${CX} ${CY} L ${x1} ${y1} A ${r} ${r} 0 ${la} 1 ${x2} ${y2} Z`, mid: sa + sliceAngle / 2, r };
+    }
+
     svgEl.appendChild(mk('circle', { cx: CX, cy: CY, r: R, fill: 'white', opacity: '0.5' }));
 
     for (const frac of [0.25, 0.5, 0.75, 1.0]) {
       svgEl.appendChild(mk('circle', {
-        cx: CX, cy: CY, r: R * frac,
-        fill: 'none',
+        cx: CX, cy: CY, r: R * frac, fill: 'none',
         stroke: frac === 1.0 ? '#1C1C1C' : '#D4C9B0',
         'stroke-width': frac === 1.0 ? '2' : '1',
         'stroke-dasharray': frac === 1.0 ? 'none' : '4 4'
@@ -776,116 +816,115 @@ RULES:
       }));
     }
 
+    // ── Brand A wedges ──
     axes.forEach((axis, i) => {
-      const rawScore   = axis[scoreKey] ?? 0;
-      const score      = Math.max(2, rawScore);
-      const r          = R * (score / 100);
-      const startAngle = sliceAngle * i - Math.PI / 2;
-      const endAngle   = startAngle + sliceAngle;
-      const largeArc   = sliceAngle > Math.PI ? 1 : 0;
-      const color      = WEDGE_COLORS[i % WEDGE_COLORS.length];
+      const rawScore = axis[scoreKey] ?? 0;
+      const { path, mid, r } = wedgePath(rawScore, i);
+      // In compare mode, Brand A is grey; in solo mode, full colour
+      const color = isCompare ? '#9E9589' : WEDGE_COLORS[i % WEDGE_COLORS.length];
+      const opacity = isCompare ? '0.55' : '0.88';
 
-      const x1 = CX + r * Math.cos(startAngle), y1 = CY + r * Math.sin(startAngle);
-      const x2 = CX + r * Math.cos(endAngle),   y2 = CY + r * Math.sin(endAngle);
+      svgEl.appendChild(mk('path', { d: path, fill: color, opacity, stroke: 'white', 'stroke-width': '1.5' }));
 
-      svgEl.appendChild(mk('path', {
-        d: `M ${CX} ${CY} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`,
-        fill: color, opacity: '0.88', stroke: 'white', 'stroke-width': '1.5'
-      }));
-
-      const midAngle = startAngle + sliceAngle / 2;
-      if (score > 12) {
+      if (Math.max(2, rawScore) > 12) {
         const lt = mk('text', {
-          x: CX + r * 0.6 * Math.cos(midAngle),
-          y: CY + r * 0.6 * Math.sin(midAngle),
+          x: CX + r * 0.6 * Math.cos(mid), y: CY + r * 0.6 * Math.sin(mid),
           'text-anchor': 'middle', 'dominant-baseline': 'central',
-          fill: 'white', 'font-family': "'Outfit',sans-serif", 'font-size': '15', 'font-weight': '700'
+          fill: 'white', 'font-family': "'Outfit',sans-serif", 'font-size': '14', 'font-weight': '700'
         });
         lt.textContent = rawScore;
         svgEl.appendChild(lt);
       }
 
-      // Label position — push outward from ring edge
-      const labelR  = R + 38;
-      const lx = CX + labelR * Math.cos(midAngle);
-      const ly = CY + labelR * Math.sin(midAngle);
+      // Axis labels
+      const labelR = R + 38;
+      const lx = CX + labelR * Math.cos(mid);
+      const ly = CY + labelR * Math.sin(mid);
       const anchor = lx < CX - 8 ? 'end' : lx > CX + 8 ? 'start' : 'middle';
 
-      // Break label into lines of max ~12 chars each so font stays large
       const allWords = axis.label.split(' ');
       const lines = [];
       let current = '';
       for (const w of allWords) {
         const candidate = current ? `${current} ${w}` : w;
-        if (candidate.length > 12 && current) {
-          lines.push(current);
-          current = w;
-        } else {
-          current = candidate;
-        }
+        if (candidate.length > 12 && current) { lines.push(current); current = w; }
+        else { current = candidate; }
       }
       if (current) lines.push(current);
 
-      const fontSize = '13';
-      const lineH    = 16;
-      const startY   = ly - ((lines.length - 1) * lineH) / 2;
-
+      const lineH  = 16;
+      const startY = ly - ((lines.length - 1) * lineH) / 2;
       lines.forEach((line, li) => {
         const t = mk('text', {
           x: lx, y: startY + li * lineH,
           'text-anchor': anchor, 'dominant-baseline': 'central',
-          fill: '#1C1C1C', 'font-family': "'Outfit',sans-serif",
-          'font-size': fontSize, 'font-weight': '700'
+          fill: '#1C1C1C', 'font-family': "'Outfit',sans-serif", 'font-size': '13', 'font-weight': '700'
         });
         t.textContent = line;
         svgEl.appendChild(t);
       });
     });
 
-    // ── OVERLAY (Brand B) ──
-    if (overlayScores && overlayScores.length) {
-      overlayScores.forEach((item, i) => {
-        const rawScore   = item.score ?? 0;
-        const score      = Math.max(2, rawScore);
-        const r          = R * (score / 100);
-        const startAngle = sliceAngle * i - Math.PI / 2;
-        const endAngle   = startAngle + sliceAngle;
-        const largeArc   = sliceAngle > Math.PI ? 1 : 0;
-        const color      = WEDGE_COLORS[i % WEDGE_COLORS.length];
+    // ── Brand B wedges (compare mode only) ──
+    if (isCompare) {
+      competitorData.scores.forEach((item, i) => {
+        const rawScore = item.score ?? 0;
+        const { path, mid, r } = wedgePath(rawScore, i);
+        const color = WEDGE_COLORS[i % WEDGE_COLORS.length];
 
-        const x1 = CX + r * Math.cos(startAngle), y1 = CY + r * Math.sin(startAngle);
-        const x2 = CX + r * Math.cos(endAngle),   y2 = CY + r * Math.sin(endAngle);
+        svgEl.appendChild(mk('path', { d: path, fill: color, opacity: '0.85', stroke: 'white', 'stroke-width': '2' }));
 
-        svgEl.appendChild(mk('path', {
-          d: `M ${CX} ${CY} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`,
-          fill: color, opacity: '0.38', stroke: 'white', 'stroke-width': '2.5'
-        }));
+        if (Math.max(2, rawScore) > 12) {
+          const lt = mk('text', {
+            x: CX + r * 0.6 * Math.cos(mid), y: CY + r * 0.6 * Math.sin(mid),
+            'text-anchor': 'middle', 'dominant-baseline': 'central',
+            fill: 'white', 'font-family': "'Outfit',sans-serif", 'font-size': '14', 'font-weight': '700'
+          });
+          lt.textContent = rawScore;
+          svgEl.appendChild(lt);
+        }
       });
 
-      // ── LEGEND ──
+      // ── Legend: one row per axis ──
       const brandAName = currentData?.brandName || 'Brand A';
       const brandBName = competitorData?.competitorName || 'Competitor';
-      const legendItems = [
-        { label: brandAName, opacity: '0.88' },
-        { label: brandBName, opacity: '0.38' }
-      ];
-      const legendColor = WEDGE_COLORS[0]; // Use first colour as representative swatch
-      const lStartX = CX - 100;
-      const lY = VB - 30;
-      legendItems.forEach((item, idx) => {
-        const lx = lStartX + idx * 160;
-        svgEl.appendChild(mk('rect', {
-          x: lx, y: lY - 10, width: 14, height: 14,
-          fill: legendColor, opacity: item.opacity, rx: '3'
-        }));
-        const lt = mk('text', {
-          x: lx + 20, y: lY + 2,
-          'text-anchor': 'start', 'dominant-baseline': 'central',
-          fill: '#1C1C1C', 'font-family': "'Outfit',sans-serif",
-          'font-size': '12', 'font-weight': '600'
-        });
-        lt.textContent = item.label;
-        svgEl.appendChild(lt);
+      const legendX = CX - 180;
+      const legendStartY = VB - 110;
+      const rowH = 20;
+
+      // Header labels
+      const headerA = mk('text', { x: legendX + 155, y: legendStartY - 6, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: '#5C5247', 'font-family': "'Outfit',sans-serif", 'font-size': '11', 'font-weight': '700' });
+      headerA.textContent = brandAName;
+      svgEl.appendChild(headerA);
+
+      const headerB = mk('text', { x: legendX + 315, y: legendStartY - 6, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: '#5C5247', 'font-family': "'Outfit',sans-serif", 'font-size': '11', 'font-weight': '700' });
+      headerB.textContent = brandBName;
+      svgEl.appendChild(headerB);
+
+      axes.forEach((axis, i) => {
+        const color   = WEDGE_COLORS[i % WEDGE_COLORS.length];
+        const scoreA  = axis[scoreKey] ?? 0;
+        const scoreB  = competitorData.scores[i]?.score ?? 0;
+        const ry      = legendStartY + i * rowH;
+
+        // Axis name
+        const lbl = mk('text', { x: legendX, y: ry + 2, 'text-anchor': 'start', 'dominant-baseline': 'central', fill: '#1C1C1C', 'font-family': "'Outfit',sans-serif", 'font-size': '11', 'font-weight': '600' });
+        lbl.textContent = axis.label;
+        svgEl.appendChild(lbl);
+
+        // Brand A bar (grey)
+        svgEl.appendChild(mk('rect', { x: legendX + 110, y: ry - 5, width: 90, height: 11, fill: '#E8E3DA', rx: '3' }));
+        svgEl.appendChild(mk('rect', { x: legendX + 110, y: ry - 5, width: Math.round(90 * scoreA / 100), height: 11, fill: '#9E9589', rx: '3' }));
+        const sA = mk('text', { x: legendX + 207, y: ry + 2, 'text-anchor': 'start', 'dominant-baseline': 'central', fill: '#5C5247', 'font-family': "'Outfit',sans-serif", 'font-size': '10', 'font-weight': '700' });
+        sA.textContent = scoreA;
+        svgEl.appendChild(sA);
+
+        // Brand B bar (colour)
+        svgEl.appendChild(mk('rect', { x: legendX + 230, y: ry - 5, width: 90, height: 11, fill: '#E8E3DA', rx: '3' }));
+        svgEl.appendChild(mk('rect', { x: legendX + 230, y: ry - 5, width: Math.round(90 * scoreB / 100), height: 11, fill: color, rx: '3', opacity: '0.8' }));
+        const sB = mk('text', { x: legendX + 327, y: ry + 2, 'text-anchor': 'start', 'dominant-baseline': 'central', fill: '#5C5247', 'font-family': "'Outfit',sans-serif", 'font-size': '10', 'font-weight': '700' });
+        sB.textContent = scoreB;
+        svgEl.appendChild(sB);
       });
     }
 
@@ -992,6 +1031,11 @@ RULES:
       showResults();
 
       competitorData = null;
+      chartView = 'v1';
+      document.getElementById('pizza-toggle').style.display = 'none';
+      document.getElementById('toggle-v1').classList.add('toggle-active');
+      document.getElementById('toggle-v2').classList.remove('toggle-active');
+      document.getElementById('pizza-sub').textContent = 'Outer ring = brand\'s full claim (100%). Filled segment = perceived backing score.';
       document.getElementById('competitor-input').value = '';
       document.getElementById('competitor-note').style.display = 'none';
       document.getElementById('competitor-loading').style.display = 'none';
@@ -1074,6 +1118,20 @@ RULES:
     }
   }
 
+  // ── CHART VIEW TOGGLE ──
+  let chartView = 'v1'; // 'v1' = solo, 'v2' = compare
+
+  function setChartView(view) {
+    chartView = view;
+    document.getElementById('toggle-v1').classList.toggle('toggle-active', view === 'v1');
+    document.getElementById('toggle-v2').classList.toggle('toggle-active', view === 'v2');
+    const mode = view === 'v2' ? 'compare' : 'solo';
+    drawPizzaChart(document.getElementById('pizza-svg-ai'), currentData.dnaAxes, 'aiSocialScore', mode);
+    document.getElementById('pizza-sub').textContent = view === 'v2'
+      ? `Grey = ${currentData.brandName}. Colour = ${competitorData.competitorName}. Outer ring = full claim (100%).`
+      : 'Outer ring = brand\'s full claim (100%). Filled segment = perceived backing score.';
+  }
+
   // ── COMPETITOR COMPARISON ──
   async function runCompetitor() {
     const brandB = document.getElementById('competitor-input').value.trim();
@@ -1092,15 +1150,12 @@ RULES:
       const data = await callGemini(buildCompetitorPrompt(brandB, axisLabels, currentData.brandName));
       competitorData = data;
 
-      // Redraw pizza chart with overlay
-      drawPizzaChart(
-        document.getElementById('pizza-svg-ai'),
-        currentData.dnaAxes,
-        'aiSocialScore',
-        data.scores
-      );
+      // Show toggle and switch to compare view
+      const toggle = document.getElementById('pizza-toggle');
+      toggle.style.display = '';
+      setChartView('v2');
 
-      note.textContent = `Showing overlay: ${currentData.brandName} vs ${data.competitorName}`;
+      note.textContent = `Toggle between solo view and ${currentData.brandName} vs ${data.competitorName} above the chart.`;
       note.style.display = '';
 
     } catch (err) {
@@ -1118,6 +1173,7 @@ RULES:
 
   resetBtn.addEventListener('click', () => {
     currentData = null; tpData = null; competitorData = null;
+    chartView = 'v1';
     brandInput.value = '';
     document.querySelector('.error-box')?.remove();
     document.getElementById('social-paste').value = '';
@@ -1127,6 +1183,9 @@ RULES:
     document.getElementById('competitor-input').value = '';
     document.getElementById('competitor-note').style.display = 'none';
     document.getElementById('competitor-section').style.display = 'none';
+    document.getElementById('pizza-toggle').style.display = 'none';
+    document.getElementById('toggle-v1').classList.add('toggle-active');
+    document.getElementById('toggle-v2').classList.remove('toggle-active');
     showEntry();
   });
 
