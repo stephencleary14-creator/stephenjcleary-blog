@@ -768,7 +768,7 @@ RULES:
   }
 
   // ── PIZZA CHART ──
-  // mode: 'solo' = Brand A only (multicolour), 'compare' = Brand A grey + Brand B coloured
+  // mode: 'solo' = Brand A only (multicolour), 'compare' = Brand A coloured + Brand B grey
   function drawPizzaChart(svgEl, axes, scoreKey, mode = 'solo') {
     svgEl.innerHTML = '';
     const VB = 740;
@@ -820,9 +820,9 @@ RULES:
     axes.forEach((axis, i) => {
       const rawScore = axis[scoreKey] ?? 0;
       const { path, mid, r } = wedgePath(rawScore, i);
-      // In compare mode, Brand A is grey; in solo mode, full colour
-      const color = isCompare ? '#9E9589' : WEDGE_COLORS[i % WEDGE_COLORS.length];
-      const opacity = isCompare ? '0.55' : '0.88';
+      // Brand A always keeps its colours; opacity drops slightly in compare mode to let Brand B sit alongside
+      const color = WEDGE_COLORS[i % WEDGE_COLORS.length];
+      const opacity = isCompare ? '0.75' : '0.88';
 
       svgEl.appendChild(mk('path', { d: path, fill: color, opacity, stroke: 'white', 'stroke-width': '1.5' }));
 
@@ -865,14 +865,13 @@ RULES:
       });
     });
 
-    // ── Brand B wedges (compare mode only) ──
+    // ── Brand B wedges (compare mode only) — grey ──
     if (isCompare) {
       competitorData.scores.forEach((item, i) => {
         const rawScore = item.score ?? 0;
         const { path, mid, r } = wedgePath(rawScore, i);
-        const color = WEDGE_COLORS[i % WEDGE_COLORS.length];
 
-        svgEl.appendChild(mk('path', { d: path, fill: color, opacity: '0.85', stroke: 'white', 'stroke-width': '2' }));
+        svgEl.appendChild(mk('path', { d: path, fill: '#9E9589', opacity: '0.5', stroke: 'white', 'stroke-width': '2' }));
 
         if (Math.max(2, rawScore) > 12) {
           const lt = mk('text', {
@@ -912,16 +911,16 @@ RULES:
         lbl.textContent = axis.label;
         svgEl.appendChild(lbl);
 
-        // Brand A bar (grey)
+        // Brand A bar (colour)
         svgEl.appendChild(mk('rect', { x: legendX + 110, y: ry - 5, width: 90, height: 11, fill: '#E8E3DA', rx: '3' }));
-        svgEl.appendChild(mk('rect', { x: legendX + 110, y: ry - 5, width: Math.round(90 * scoreA / 100), height: 11, fill: '#9E9589', rx: '3' }));
+        svgEl.appendChild(mk('rect', { x: legendX + 110, y: ry - 5, width: Math.round(90 * scoreA / 100), height: 11, fill: color, rx: '3', opacity: '0.85' }));
         const sA = mk('text', { x: legendX + 207, y: ry + 2, 'text-anchor': 'start', 'dominant-baseline': 'central', fill: '#5C5247', 'font-family': "'Outfit',sans-serif", 'font-size': '10', 'font-weight': '700' });
         sA.textContent = scoreA;
         svgEl.appendChild(sA);
 
-        // Brand B bar (colour)
+        // Brand B bar (grey)
         svgEl.appendChild(mk('rect', { x: legendX + 230, y: ry - 5, width: 90, height: 11, fill: '#E8E3DA', rx: '3' }));
-        svgEl.appendChild(mk('rect', { x: legendX + 230, y: ry - 5, width: Math.round(90 * scoreB / 100), height: 11, fill: color, rx: '3', opacity: '0.8' }));
+        svgEl.appendChild(mk('rect', { x: legendX + 230, y: ry - 5, width: Math.round(90 * scoreB / 100), height: 11, fill: '#9E9589', rx: '3' }));
         const sB = mk('text', { x: legendX + 327, y: ry + 2, 'text-anchor': 'start', 'dominant-baseline': 'central', fill: '#5C5247', 'font-family': "'Outfit',sans-serif", 'font-size': '10', 'font-weight': '700' });
         sB.textContent = scoreB;
         svgEl.appendChild(sB);
@@ -1128,7 +1127,7 @@ RULES:
     const mode = view === 'v2' ? 'compare' : 'solo';
     drawPizzaChart(document.getElementById('pizza-svg-ai'), currentData.dnaAxes, 'aiSocialScore', mode);
     document.getElementById('pizza-sub').textContent = view === 'v2'
-      ? `Grey = ${currentData.brandName}. Colour = ${competitorData.competitorName}. Outer ring = full claim (100%).`
+      ? `Colour = ${currentData.brandName}. Grey = ${competitorData.competitorName}. Outer ring = full claim (100%).`
       : 'Outer ring = brand\'s full claim (100%). Filled segment = perceived backing score.';
   }
 
