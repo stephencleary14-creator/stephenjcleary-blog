@@ -508,6 +508,16 @@
           </div>
           <canvas id="wc-canvas-neg" class="wc-canvas"></canvas>
         </div>
+        <!-- COMPETITOR COMPARISON -->
+        <div id="competitor-section" style="display:none;margin-top:20px;padding-top:16px;border-top:1.5px solid var(--cream)">
+          <div class="wc-label" style="margin-bottom:10px;color:var(--mid)">Compare against a competitor</div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="text" id="competitor-input" class="brand-input" placeholder="Enter a competitor brand…" style="margin-bottom:0;flex:1;font-size:0.9rem;padding:10px 14px">
+            <button id="competitor-btn" class="btn-enrich" style="white-space:nowrap;padding:10px 18px">Compare</button>
+          </div>
+          <div id="competitor-loading" style="display:none;font-size:0.8rem;color:var(--mid);font-style:italic;margin-top:8px">Analysing competitor…</div>
+          <p id="competitor-note" style="display:none;font-size:0.78rem;color:var(--mid);margin-top:8px;font-style:italic"></p>
+        </div>
       </div>
     </div>
 
@@ -576,8 +586,9 @@
   const WEDGE_COLORS = ['#C8102E', '#3B9E8E', '#4A7FB5', '#E8A838', '#B07A8A'];
 
   // ── STATE ──
-  let currentData = null; // AI phase 1 data (never mutated)
-  let tpData      = null; // Trustpilot enrichment data
+  let currentData    = null; // AI phase 1 data (never mutated)
+  let tpData         = null; // Trustpilot enrichment data
+  let competitorData = null; // Competitor overlay data
 
   // ── ELEMENTS ──
   const entrySection   = document.getElementById('entry-section');
@@ -676,6 +687,26 @@ RULES:
 - Return ONLY valid JSON, no markdown, no explanation.`;
   }
 
+  function buildCompetitorPrompt(brandB, axisLabels, brandA) {
+    return `You are a brand strategy expert. Score the brand "${brandB}" on EXACTLY these 5 dimensions:
+${axisLabels.map((l, i) => `${i + 1}. ${l}`).join('\n')}
+
+These dimensions were chosen to represent "${brandA}"'s brand DNA. Score "${brandB}" on each using the same consumer perception lens — how strongly do consumers associate this brand with each dimension?
+
+Return ONLY this JSON:
+{
+  "competitorName": "string — official name of ${brandB}",
+  "scores": [
+    { "label": "string — must exactly match the dimension above", "score": number 0-100 }
+  ]
+}
+
+RULES:
+- scores: EXACTLY 5 items, in the same order as the dimensions listed above.
+- score: 80-100 consumers actively associate this; 50-79 partial; 20-49 weak; 0-19 not associated.
+- Return ONLY valid JSON, no markdown, no explanation.`;
+  }
+
   function buildEnrichPrompt(brandName, pastedText) {
     return `You are a brand analyst. Brand being analysed: "${brandName}".
 
@@ -708,7 +739,7 @@ RULES:
   }
 
   // ── PIZZA CHART ──
-  function drawPizzaChart(svgEl, axes, scoreKey) {
+  function drawPizzaChart(svgEl, axes, scoreKey, overlayScores = null) {
     svgEl.innerHTML = '';
     // Large viewBox gives generous margin for labels on all sides
     const VB = 740;
@@ -810,6 +841,53 @@ RULES:
         svgEl.appendChild(t);
       });
     });
+
+    // ── OVERLAY (Brand B) ──
+    if (overlayScores && overlayScores.length) {
+      overlayScores.forEach((item, i) => {
+        const rawScore   = item.score ?? 0;
+        const score      = Math.max(2, rawScore);
+        const r          = R * (score / 100);
+        const startAngle = sliceAngle * i - Math.PI / 2;
+        const endAngle   = startAngle + sliceAngle;
+        const largeArc   = sliceAngle > Math.PI ? 1 : 0;
+        const color      = WEDGE_COLORS[i % WEDGE_COLORS.length];
+
+        const x1 = CX + r * Math.cos(startAngle), y1 = CY + r * Math.sin(startAngle);
+        const x2 = CX + r * Math.cos(endAngle),   y2 = CY + r * Math.sin(endAngle);
+
+        svgEl.appendChild(mk('path', {
+          d: `M ${CX} ${CY} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`,
+          fill: color, opacity: '0.38', stroke: 'white', 'stroke-width': '2.5'
+        }));
+      });
+
+      // ── LEGEND ──
+      const brandAName = currentData?.brandName || 'Brand A';
+      const brandBName = competitorData?.competitorName || 'Competitor';
+      const legendItems = [
+        { label: brandAName, opacity: '0.88' },
+        { label: brandBName, opacity: '0.38' }
+      ];
+      const legendColor = WEDGE_COLORS[0]; // Use first colour as representative swatch
+      const lStartX = CX - 100;
+      const lY = VB - 30;
+      legendItems.forEach((item, idx) => {
+        const lx = lStartX + idx * 160;
+        svgEl.appendChild(mk('rect', {
+          x: lx, y: lY - 10, width: 14, height: 14,
+          fill: legendColor, opacity: item.opacity, rx: '3'
+        }));
+        const lt = mk('text', {
+          x: lx + 20, y: lY + 2,
+          'text-anchor': 'start', 'dominant-baseline': 'central',
+          fill: '#1C1C1C', 'font-family': "'Outfit',sans-serif",
+          'font-size': '12', 'font-weight': '600'
+        });
+        lt.textContent = item.label;
+        svgEl.appendChild(lt);
+      });
+    }
 
     svgEl.appendChild(mk('circle', { cx: CX, cy: CY, r: 18, fill: 'white', stroke: '#EDE0C4', 'stroke-width': '2' }));
   }
@@ -913,6 +991,12 @@ RULES:
       updateTpLink(data.brandName || brand);
       showResults();
 
+      competitorData = null;
+      document.getElementById('competitor-input').value = '';
+      document.getElementById('competitor-note').style.display = 'none';
+      document.getElementById('competitor-loading').style.display = 'none';
+      document.getElementById('competitor-section').style.display = '';
+
       drawPizzaChart(document.getElementById('pizza-svg-ai'), data.dnaAxes, 'aiSocialScore');
       renderAxesCards();
       const posTerms = (data.wordCloudTerms || []).filter(t => t.sentiment === 'positive');
@@ -990,22 +1074,65 @@ RULES:
     }
   }
 
+  // ── COMPETITOR COMPARISON ──
+  async function runCompetitor() {
+    const brandB = document.getElementById('competitor-input').value.trim();
+    if (!brandB || !currentData) return;
+
+    const btn     = document.getElementById('competitor-btn');
+    const loading = document.getElementById('competitor-loading');
+    const note    = document.getElementById('competitor-note');
+
+    btn.disabled = true;
+    loading.style.display = '';
+    note.style.display = 'none';
+
+    try {
+      const axisLabels = currentData.dnaAxes.map(a => a.label);
+      const data = await callGemini(buildCompetitorPrompt(brandB, axisLabels, currentData.brandName));
+      competitorData = data;
+
+      // Redraw pizza chart with overlay
+      drawPizzaChart(
+        document.getElementById('pizza-svg-ai'),
+        currentData.dnaAxes,
+        'aiSocialScore',
+        data.scores
+      );
+
+      note.textContent = `Showing overlay: ${currentData.brandName} vs ${data.competitorName}`;
+      note.style.display = '';
+
+    } catch (err) {
+      note.textContent = `Error: ${err.message}`;
+      note.style.display = '';
+    } finally {
+      loading.style.display = 'none';
+      btn.disabled = false;
+    }
+  }
+
   // ── EVENT LISTENERS ──
   analyseBtn.addEventListener('click', analyse);
   brandInput.addEventListener('keydown', e => { if (e.key === 'Enter') analyse(); });
 
   resetBtn.addEventListener('click', () => {
-    currentData = null; tpData = null;
+    currentData = null; tpData = null; competitorData = null;
     brandInput.value = '';
     document.querySelector('.error-box')?.remove();
     document.getElementById('social-paste').value = '';
     document.getElementById('enrich-status').textContent = '';
     document.getElementById('tp-placeholder').style.display = '';
     document.getElementById('tp-charts').style.display = 'none';
+    document.getElementById('competitor-input').value = '';
+    document.getElementById('competitor-note').style.display = 'none';
+    document.getElementById('competitor-section').style.display = 'none';
     showEntry();
   });
 
   document.getElementById('enrich-btn').addEventListener('click', enrich);
+  document.getElementById('competitor-btn').addEventListener('click', runCompetitor);
+  document.getElementById('competitor-input').addEventListener('keydown', e => { if (e.key === 'Enter') runCompetitor(); });
 
   function updateTpLink(brandName) {
     const slug = brandName.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
