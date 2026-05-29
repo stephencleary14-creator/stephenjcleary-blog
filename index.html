@@ -1331,9 +1331,51 @@
         <!-- Centre dot -->
         <circle cx="80" cy="60" r="4" fill="#C8102E"/>
       </svg>`,
+      brandDNA: `<svg viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="160" height="120" fill="#EDE0C4"/>
+        <!-- Mirror frame -->
+        <ellipse cx="80" cy="52" rx="30" ry="38" fill="#C8102E"/>
+        <ellipse cx="80" cy="52" rx="23" ry="31" fill="#EDE0C4"/>
+        <!-- Mirror handle -->
+        <rect x="74" y="88" width="12" height="22" rx="6" fill="#C8102E"/>
+        <!-- Reflection question mark -->
+        <text x="80" y="63" font-family="Outfit,Segoe UI,sans-serif" font-size="28" font-weight="700" fill="#C8102E" text-anchor="middle">?</text>
+      </svg>`,
     };
 
     const entries = [
+      {
+        icon: icons.brandDNA,
+        photo: 'images/SJC_runway_pose.png',
+        photoAlt: 'SJC figurine standing at the end of a fashion show runway with a pale light burst radiating behind',
+        meta: '29 May 2026',
+        title: "When a brand asks: Who am I?",
+        body: `
+          <video controls style="width:100%;border-radius:6px;margin:0 0 28px;display:block;">
+            <source src="images/Blue_Steel.mp4" type="video/mp4" />
+          </video>
+          <p>There's a scene in Zoolander where Derek, at his lowest point, finds himself staring into a puddle on the street. He looks at his reflection and asks the only question that seems to matter in that moment: <em>Who am I?</em></p>
+          <p>Then his tiny phone rings. He answers: "God?"</p>
+          <p>Derek found Magnum after some runway drama and all was well in the end. But the question "Who am I?" is one I've been thinking about when it comes to brand management.</p>
+          <p>A brand can have a beautifully written DNA statement. A clear purpose. A set of associations it wants to own. But what does the consumer actually think? And does that match?</p>
+          <p>As part of my MiniMBA in Brand Management I've been looking at exactly this: the gap between what a brand says it is and what people actually associate with it. So I built a simple tool to explore it.</p>
+          <img src="images/BrandDNA1.png" alt="Brand DNA tool — search interface" class="entry-img" />
+          <p>You search any brand and Gemini AI analyses it. It starts with the brand's stated DNA, pulled from corporate websites and owned channels.</p>
+          <img src="images/BrandDNA5.png" alt="Brand DNA tool — stated purpose statement" class="entry-img" />
+          <p>Then it finds five associations linked to that brand and scores each one based on online conversation, reviews and social media. A breakdown for each is given.</p>
+          <img src="images/BrandDNA4.png" alt="Brand DNA tool — association scoring" class="entry-img" />
+          <p>It also surfaces positive and negative word associations from across the web.</p>
+          <p>You can go further. Type in a competitor and the tool will analyse how Brand B scores on the associations that matter to Brand A.</p>
+          <img src="images/BrandDNA6.png" alt="Brand DNA tool — competitor comparison" class="entry-img" />
+          <p>Finally, there's a Brand Experience section. Paste in the TrustPilot page for the brand and the top five themes are surfaced, along with the sentiment attached to each.</p>
+          <img src="images/BrandDNA7.png" alt="Brand DNA tool — brand experience themes from TrustPilot" class="entry-img" />
+          <p>Now, this isn't a substitute for real research. It won't give you consumer profiles, explain why people buy or walk away, or surface the real pain points underneath the numbers. That work is harder and you still need it.</p>
+          <p>But as a topline sense-check, a way for a brand to ask itself whether its stated positioning is landing the way it intends, it's a useful place to start.</p>
+          <p>At the very least, it might stop a brand from staring too long at its own reflection.</p>
+          <p><em>Who am I?</em></p>
+          <p>It's worth asking.</p>
+        `
+      },
       {
         icon: icons.handshake,
         photo: 'images/Xabi.png',
