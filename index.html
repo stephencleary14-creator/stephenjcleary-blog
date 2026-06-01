@@ -1498,82 +1498,86 @@
             <p style="margin:0 0 4px;font-size:0.95rem;font-weight:700;color:#1C1C1C;line-height:1.4;">Change in Brand Awareness Lift</p>
             <p style="margin:0 0 20px;font-size:0.8rem;color:#5C5247;">If brand asset present in first 2 seconds</p>
             <div style="position:relative;">
+              <!--
+                Labels right-aligned at x=148. Gap of 6px. Chart starts at x=154.
+                Zero line: x = 154 + (40/250 × 422) = 154 + 67.5 = 222
+                Scale: 1.688px per 1%
+                -33% bar: w=56, x=222-56=166 — well clear of labels
+              -->
               <svg viewBox="0 0 600 286" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">
 
                 <!-- Zero line -->
-                <line x1="238" y1="4" x2="238" y2="274" stroke="#C8102E" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
-                <!-- Grid: +50% = 238+84=322, +100%=406, +150%=491, -25%=238-42=196 -->
-                <line x1="322" y1="4" x2="322" y2="274" stroke="#EDE0C4" stroke-width="0.75" stroke-dasharray="3,3"/>
-                <line x1="406" y1="4" x2="406" y2="274" stroke="#EDE0C4" stroke-width="0.75" stroke-dasharray="3,3"/>
-                <line x1="491" y1="4" x2="491" y2="274" stroke="#EDE0C4" stroke-width="0.75" stroke-dasharray="3,3"/>
-                <line x1="196" y1="4" x2="196" y2="274" stroke="#EDE0C4" stroke-width="0.75" stroke-dasharray="3,3"/>
+                <line x1="222" y1="4" x2="222" y2="274" stroke="#C8102E" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+                <!-- Grid: +50%=222+84=306, +100%=390, +150%=475, -25%=222-42=180 -->
+                <line x1="306" y1="4" x2="306" y2="274" stroke="#EDE0C4" stroke-width="0.75" stroke-dasharray="3,3"/>
+                <line x1="390" y1="4" x2="390" y2="274" stroke="#EDE0C4" stroke-width="0.75" stroke-dasharray="3,3"/>
+                <line x1="475" y1="4" x2="475" y2="274" stroke="#EDE0C4" stroke-width="0.75" stroke-dasharray="3,3"/>
+                <line x1="180" y1="4" x2="180" y2="274" stroke="#EDE0C4" stroke-width="0.75" stroke-dasharray="3,3"/>
 
-                <!-- Row height: 20px. Rows start at y=8, bar at y+3, height=14 -->
+                <!-- Sonic Asset: 191% → w=322, x=222 -->
+                <text x="148" y="21" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Sonic Asset</text>
+                <rect x="222" y="9" width="322" height="14" rx="2" fill="#C8102E"/>
+                <text x="548" y="20" font-size="8" font-weight="700" fill="#C8102E" font-family="Outfit,Segoe UI,sans-serif" dx="3">191%</text>
 
-                <!-- Sonic Asset: 191% → w=322, x=238 -->
-                <text x="234" y="21" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Sonic Asset</text>
-                <rect x="238" y="9" width="322" height="14" rx="2" fill="#C8102E"/>
-                <text x="564" y="20" font-size="8" font-weight="700" fill="#C8102E" font-family="Outfit,Segoe UI,sans-serif" dx="3">191%</text>
+                <!-- Logo in Context: 182% → w=307, x=222 -->
+                <text x="148" y="41" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Logo in Context</text>
+                <rect x="222" y="29" width="307" height="14" rx="2" fill="#C8102E"/>
+                <text x="533" y="40" font-size="8" font-weight="700" fill="#C8102E" font-family="Outfit,Segoe UI,sans-serif" dx="3">182%</text>
 
-                <!-- Logo in Context: 182% → w=307, x=238 -->
-                <text x="234" y="41" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Logo in Context</text>
-                <rect x="238" y="29" width="307" height="14" rx="2" fill="#C8102E"/>
-                <text x="549" y="40" font-size="8" font-weight="700" fill="#C8102E" font-family="Outfit,Segoe UI,sans-serif" dx="3">182%</text>
+                <!-- Fluent Character: 57% → w=96, x=222 -->
+                <text x="148" y="61" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Fluent Character</text>
+                <rect x="222" y="49" width="96" height="14" rx="2" fill="#C8102E" opacity="0.8"/>
+                <text x="322" y="60" font-size="8" font-weight="700" fill="#C8102E" font-family="Outfit,Segoe UI,sans-serif" dx="3">57%</text>
 
-                <!-- Fluent Character: 57% → w=96, x=238 -->
-                <text x="234" y="61" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Fluent Character</text>
-                <rect x="238" y="49" width="96" height="14" rx="2" fill="#C8102E" opacity="0.8"/>
-                <text x="338" y="60" font-size="8" font-weight="700" fill="#C8102E" font-family="Outfit,Segoe UI,sans-serif" dx="3">57%</text>
+                <!-- Jingle: 40% → w=68, x=222 -->
+                <text x="148" y="81" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Jingle</text>
+                <rect x="222" y="69" width="68" height="14" rx="2" fill="#C8102E" opacity="0.75"/>
+                <text x="294" y="80" font-size="8" font-weight="700" fill="#C8102E" font-family="Outfit,Segoe UI,sans-serif" dx="3">40%</text>
 
-                <!-- Jingle: 40% → w=68, x=238 -->
-                <text x="234" y="81" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Jingle</text>
-                <rect x="238" y="69" width="68" height="14" rx="2" fill="#C8102E" opacity="0.75"/>
-                <text x="310" y="80" font-size="8" font-weight="700" fill="#C8102E" font-family="Outfit,Segoe UI,sans-serif" dx="3">40%</text>
+                <!-- Slogan: 27% → w=46, x=222 -->
+                <text x="148" y="101" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Slogan</text>
+                <rect x="222" y="89" width="46" height="14" rx="2" fill="#C8102E" opacity="0.7"/>
+                <text x="272" y="100" font-size="8" font-weight="700" fill="#C8102E" font-family="Outfit,Segoe UI,sans-serif" dx="3">27%</text>
 
-                <!-- Slogan: 27% → w=46, x=238 -->
-                <text x="234" y="101" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Slogan</text>
-                <rect x="238" y="89" width="46" height="14" rx="2" fill="#C8102E" opacity="0.7"/>
-                <text x="288" y="100" font-size="8" font-weight="700" fill="#C8102E" font-family="Outfit,Segoe UI,sans-serif" dx="3">27%</text>
+                <!-- Product: 24% → w=41, x=222 -->
+                <text x="148" y="121" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Product</text>
+                <rect x="222" y="109" width="41" height="14" rx="2" fill="#C8102E" opacity="0.65"/>
+                <text x="267" y="120" font-size="8" font-weight="700" fill="#C8102E" font-family="Outfit,Segoe UI,sans-serif" dx="3">24%</text>
 
-                <!-- Product: 24% → w=41, x=238 -->
-                <text x="234" y="121" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Product</text>
-                <rect x="238" y="109" width="41" height="14" rx="2" fill="#C8102E" opacity="0.65"/>
-                <text x="283" y="120" font-size="8" font-weight="700" fill="#C8102E" font-family="Outfit,Segoe UI,sans-serif" dx="3">24%</text>
+                <!-- Spoken Brand Name: 14% → w=24, x=222 -->
+                <text x="148" y="141" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Spoken Brand Name</text>
+                <rect x="222" y="129" width="24" height="14" rx="2" fill="#C8102E" opacity="0.6"/>
+                <text x="250" y="140" font-size="8" font-weight="700" fill="#C8102E" font-family="Outfit,Segoe UI,sans-serif" dx="3">14%</text>
 
-                <!-- Spoken Brand Name: 14% → w=24, x=238 -->
-                <text x="234" y="141" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Spoken Brand Name</text>
-                <rect x="238" y="129" width="24" height="14" rx="2" fill="#C8102E" opacity="0.6"/>
-                <text x="266" y="140" font-size="8" font-weight="700" fill="#C8102E" font-family="Outfit,Segoe UI,sans-serif" dx="3">14%</text>
+                <!-- Brand Colors: 12% → w=20, x=222 -->
+                <text x="148" y="161" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Brand Colors</text>
+                <rect x="222" y="149" width="20" height="14" rx="2" fill="#C8102E" opacity="0.55"/>
+                <text x="246" y="160" font-size="8" font-weight="700" fill="#C8102E" font-family="Outfit,Segoe UI,sans-serif" dx="3">12%</text>
 
-                <!-- Brand Colors: 12% → w=20, x=238 -->
-                <text x="234" y="161" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Brand Colors</text>
-                <rect x="238" y="149" width="20" height="14" rx="2" fill="#C8102E" opacity="0.55"/>
-                <text x="262" y="160" font-size="8" font-weight="700" fill="#C8102E" font-family="Outfit,Segoe UI,sans-serif" dx="3">12%</text>
+                <!-- Fluent Scenario: 1% → w=2, x=222 -->
+                <text x="148" y="181" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Fluent Scenario</text>
+                <rect x="222" y="169" width="2" height="14" rx="1" fill="#C8102E" opacity="0.5"/>
+                <text x="228" y="180" font-size="8" font-weight="700" fill="#C8102E" font-family="Outfit,Segoe UI,sans-serif" dx="3">1%</text>
 
-                <!-- Fluent Scenario: 1% → w=2, x=238 -->
-                <text x="234" y="181" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Fluent Scenario</text>
-                <rect x="238" y="169" width="2" height="14" rx="1" fill="#C8102E" opacity="0.5"/>
-                <text x="244" y="180" font-size="8" font-weight="700" fill="#C8102E" font-family="Outfit,Segoe UI,sans-serif" dx="3">1%</text>
+                <!-- Celebrity: -7% → w=12, x=210 -->
+                <text x="148" y="201" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Celebrity</text>
+                <rect x="210" y="189" width="12" height="14" rx="2" fill="#1C1C1C" opacity="0.45"/>
+                <text x="206" y="200" font-size="8" font-weight="700" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif" text-anchor="end">-7%</text>
 
-                <!-- Celebrity: -7% → w=12, x=226 -->
-                <text x="234" y="201" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Celebrity</text>
-                <rect x="226" y="189" width="12" height="14" rx="2" fill="#1C1C1C" opacity="0.45"/>
-                <text x="222" y="200" font-size="8" font-weight="700" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif" text-anchor="end">-7%</text>
+                <!-- Written Brand Name: -15% → w=25, x=197 -->
+                <text x="148" y="221" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Written Brand Name</text>
+                <rect x="197" y="209" width="25" height="14" rx="2" fill="#1C1C1C" opacity="0.45"/>
+                <text x="193" y="220" font-size="8" font-weight="700" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif" text-anchor="end">-15%</text>
 
-                <!-- Written Brand Name: -15% → w=25, x=213 -->
-                <text x="234" y="221" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Written Brand Name</text>
-                <rect x="213" y="209" width="25" height="14" rx="2" fill="#1C1C1C" opacity="0.45"/>
-                <text x="209" y="220" font-size="8" font-weight="700" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif" text-anchor="end">-15%</text>
+                <!-- Logo: -30% → w=51, x=171 -->
+                <text x="148" y="241" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Logo</text>
+                <rect x="171" y="229" width="51" height="14" rx="2" fill="#1C1C1C" opacity="0.45"/>
+                <text x="167" y="240" font-size="8" font-weight="700" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif" text-anchor="end">-30%</text>
 
-                <!-- Logo: -30% → w=51, x=187 -->
-                <text x="234" y="241" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Logo</text>
-                <rect x="187" y="229" width="51" height="14" rx="2" fill="#1C1C1C" opacity="0.45"/>
-                <text x="183" y="240" font-size="8" font-weight="700" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif" text-anchor="end">-30%</text>
-
-                <!-- Brand Font: -33% → w=56, x=182 -->
-                <text x="234" y="261" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Brand Font</text>
-                <rect x="182" y="249" width="56" height="14" rx="2" fill="#1C1C1C" opacity="0.45"/>
-                <text x="178" y="260" font-size="8" font-weight="700" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif" text-anchor="end">-33%</text>
+                <!-- Brand Font: -33% → w=56, x=166 -->
+                <text x="148" y="261" text-anchor="end" font-size="9.5" font-weight="600" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif">Brand Font</text>
+                <rect x="166" y="249" width="56" height="14" rx="2" fill="#1C1C1C" opacity="0.45"/>
+                <text x="162" y="260" font-size="8" font-weight="700" fill="#1C1C1C" font-family="Outfit,Segoe UI,sans-serif" text-anchor="end">-33%</text>
 
               </svg>
             </div>
