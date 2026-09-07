@@ -4,7 +4,7 @@
     { "source": "/posts/:slug", "destination": "/:slug", "permanent": true }
   ],
   "rewrites": [
-    { "source": "/:slug((?!clients|api|images|posts|favicon|findthe10-talent).*)", "destination": "/posts/:slug" }
+    { "source": "/:slug((?!clients|api|images|posts|favicon|findthe10-talent|findthe10).*)", "destination": "/posts/:slug" }
   ],
   "headers": [
     {
