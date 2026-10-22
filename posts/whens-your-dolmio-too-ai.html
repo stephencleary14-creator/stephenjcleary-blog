@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>When'sa your Dolmio too AI? — stephenjcleary</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5HLCJ1PDQK"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5HLCJ1PDQK');
+  </script>
+  <style>
+    :root {
+      --cream:       #EDE0C4;
+      --cream-light: #F7F2EA;
+      --red:         #C8102E;
+      --red-deep:    #A00E24;
+      --dark:        #1C1C1C;
+      --mid:         #5C5247;
+      --font:        'Outfit', 'Segoe UI', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background: var(--cream-light);
+      color: var(--dark);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ── Nav ── */
+    nav {
+      background: transparent;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+    }
+
+    .nav-home {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(237, 224, 196, 0.7);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .nav-home:hover {
+      color: var(--cream);
+    }
+
+    .nav-home::before {
+      content: '← ';
+    }
+
+    .nav-search {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-search input {
+      background: #2e2e2e;
+      border: 1px solid rgba(237, 224, 196, 0.25);
+      border-radius: 4px;
+      color: #ffffff;
+      -webkit-text-fill-color: #ffffff;
+      caret-color: #ffffff;
+      font-family: var(--font);
+      font-size: 13px;
+      padding: 6px 14px;
+      width: 220px;
+      outline: none;
+      position: relative;
+      z-index: 101;
+      transition: border-color 0.15s, width 0.2s;
+    }
+
+    .nav-search input:focus {
+      border-color: rgba(237, 224, 196, 0.6);
+      width: 280px;
+    }
+
+    .nav-search input::placeholder {
+      color: rgba(237, 224, 196, 0.4);
+    }
+
+    /* ── Entry Header ── */
+    .entry-header {
+      background: var(--dark);
+      padding: 80px 32px 36px;
+      border-bottom: 3px solid var(--red);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .entry-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(200,16,46,0.18) 1px, transparent 1px);
+      background-size: 22px 22px;
+      pointer-events: none;
+    }
+
+    .entry-header::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 72%;
+      transform: translate(-50%, -44%);
+      width: 500px;
+      height: 240px;
+      background: radial-gradient(ellipse at center,
+        rgba(200,16,46,0.35) 0%,
+        rgba(200,16,46,0.14) 40%,
+        transparent 70%
+      );
+      pointer-events: none;
+    }
+
+    .entry-header-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .entry-header-top {
+      margin-bottom: 16px;
+    }
+
+    .card-meta {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--mid);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .entry-title {
+      font-size: clamp(22px, 4vw, 36px);
+      font-weight: 700;
+      color: var(--cream-light);
+      line-height: 1.2;
+    }
+
+    /* ── Entry Body ── */
+    .entry-body-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 40px 32px 24px;
+    }
+
+    .entry-body p {
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--dark);
+      margin-bottom: 20px;
+    }
+
+    .entry-body h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--dark);
+      margin: 32px 0 12px;
+      line-height: 1.3;
+    }
+
+    .entry-body ul {
+      margin: 0 0 20px 20px;
+      padding: 0;
+    }
+
+    .entry-body ul li {
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+
+    .entry-body a {
+      color: var(--red);
+      text-decoration: none;
+    }
+
+    .entry-body a:hover {
+      color: var(--red-deep);
+      text-decoration: underline;
+    }
+
+    .entry-body em {
+      font-style: italic;
+    }
+
+    .entry-body strong {
+      font-weight: 700;
+    }
+
+    /* ── Entry images ── */
+    .entry-img {
+      width: 100%;
+      border-radius: 6px;
+      margin: 28px 0;
+      display: block;
+      object-fit: cover;
+      max-height: 400px;
+    }
+
+    .entry-img-caption {
+      font-size: 12px;
+      color: var(--mid);
+      text-align: center;
+      margin-top: -20px;
+      margin-bottom: 28px;
+    }
+
+    /* ── Blockquote (Claude response) ── */
+    .claude-quote {
+      background: #f0ebe1;
+      border-left: 4px solid var(--red);
+      border-radius: 0 6px 6px 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+    }
+
+    .claude-quote p {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--dark);
+      margin-bottom: 16px;
+    }
+
+    .claude-quote p:last-child {
+      margin-bottom: 0;
+    }
+
+    .claude-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--mid);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+
+    /* ── Footer ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--red);
+      text-decoration: none;
+      margin-bottom: 16px;
+      transition: color 0.15s;
+    }
+
+    .back-link::before {
+      content: '← ';
+      margin-right: 2px;
+    }
+
+    .back-link:hover {
+      color: var(--red-deep);
+    }
+
+    footer {
+      text-align: center;
+      padding: 0 32px 32px;
+    }
+
+    footer img {
+      max-width: 960px;
+      width: 100%;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 720px) {
+      nav {
+        padding: 0 20px;
+      }
+
+      .nav-search input {
+        width: 160px;
+      }
+
+      .entry-header {
+        padding: 72px 20px 28px;
+      }
+
+      .entry-body-wrap {
+        padding: 28px 20px 24px;
+      }
+
+      .claude-quote {
+        padding: 20px;
+      }
+
+      footer {
+        padding: 0 20px 24px;
+      }
+    }
+
+    .entry-wordmark {
+      font-size: 13px;
+      font-weight: 700;
+      color: #F7F2EA;
+      letter-spacing: 0.01em;
+      margin-bottom: 20px;
+    }
+    .entry-wordmark span { color: #C8102E; }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <a class="nav-home" href="../index.html">Back home</a>
+    <div class="nav-search">
+      <input type="text" placeholder="Search entries…" autocomplete="off" spellcheck="false" />
+    </div>
+  </nav>
+
+  <!-- Entry Header -->
+  <div class="entry-header">
+    <div class="entry-header-inner">
+      <p class="entry-wordmark">stephen<span>j</span>cleary</p>
+      <div class="entry-header-top">
+        <span class="card-meta">22 Oct 2026</span>
+      </div>
+      <h1 class="entry-title">When'sa your Dolmio too AI?</h1>
+    </div>
+  </div>
+
+  <!-- Entry Body -->
+  <div class="entry-body-wrap">
+    <div class="entry-body">
+
+      <img src="../images/dolmio-hero.png" alt="SJC figurine in a supermarket aisle holding a jar of Dolmio pasta sauce" class="entry-img" />
+
+      <p>I was in the supermarket last week and picked up a jar of Dolmio. I turned the jar around, the way you do when you're pretending to care about the ingredients, and spotted something underneath the food photo.</p>
+
+      <p><em>Serving suggestion. Image generated with AI.</em></p>
+
+      <p>I stood there for a second. I hadn't seen it before and was surprised. A food brand, on the shelf in SuperValu, openly telling me the picture of creamy pasta on the label was made by AI. I took a photo.</p>
+
+      <img src="../images/dolmioAI.jpeg" alt="Dolmio Intensify jar showing 'Image generated with AI' label" class="entry-img" />
+
+      <p>When I got home I checked the Dolmio website. Every jar in the Intensify range carries the same label. A deliberate, range-wide decision.</p>
+
+      <img src="../images/dolmioAI2.png" alt="Dolmio Intensify jar on the Dolmio website showing 'Image generated with AI' label" class="entry-img" />
+
+      <p>My first reaction was to question whether this is morally right. Should a food brand be using AI-generated images to sell you food?</p>
+
+      <p>I did what anyone would do. I asked my wife.</p>
+
+      <p>She said, "I don't care."</p>
+
+      <p>Fair enough. I turned to Claude.</p>
+
+      <div class="claude-quote">
+        <p class="claude-label">Claude</p>
+        <p>It's morally fine. But it's commercially interesting that they felt the need to label it.</p>
+        <p>The food on that jar never looked like what you'd actually pour out anyway. Every pasta sauce photo has been styled, lit, and retouched to within an inch of its life for decades. The "serving suggestion" disclaimer already tells you "this isn't what you're getting." An AI-generated image of a bowl of creamy pasta is no more or less misleading than a photographer spending four hours with tweezers arranging penne under studio lights.</p>
+        <p>So on the deception question, I don't think it moves the needle. Nobody is buying Dolmio because the photo on the jar convinced them it would look exactly like that.</p>
+        <p>Where it gets more interesting is the signal it sends. Dolmio (Mars) is a massive FMCG brand. If they're replacing pack photography with AI-generated images, that's a cost-cutting decision dressed up as transparency. The "Image generated with AI" label looks like honesty, but it might also be legal cover. And it raises a question for the creative industry: if the biggest food brands in the world have decided that a real photographer, food stylist, and art director aren't worth the spend for pack shots, what does that mean for the people who used to do that work?</p>
+        <p>So the morality isn't really about the consumer being misled. It's about whether brands should be transparent about why they made that choice, not just that they made it.</p>
+      </div>
+
+      <p>I thought that was a pretty solid answer. And to be honest, I agree with most of it. We've all bitten into a Burger King Whopper and compared it to the one dripping on the grill in their pictures. The gap between food photography and food reality has existed for as long as food advertising has. AI just closes that gap at a lower cost. And now it seems the production method for food imagery will be declared.</p>
+
+      <p>But here's the thing that makes me more optimistic about what Dolmio is doing overall.</p>
+
+      <h3>The Dolmio family is back</h3>
+
+      <p>I'm sure you remember them. The puppet family with the thick Italian accents and the tagline, "When'sa your Dolmio day?" They were one of the most distinctive brand assets in the grocery aisle. Recognisable, warm, and completely ownable. Then they disappeared for a while.</p>
+
+      <p>Now they're back, for Dolmio's 40th anniversary. And they're not just running the puppets in ads again. In Australia, they've built an AI tool called the Dolmio Puppetiser that lets real families upload a photo and turn themselves into Dolmio-style puppets. The winning families get featured on a billboard.</p>
+
+      <img src="../images/dolmioAI3.png" alt="7News article about the Dolmio family returning in Australia with the Puppetiser AI tool" class="entry-img" />
+      <p class="entry-img-caption">7News, 23 Sep 2026</p>
+
+      <img src="../images/dolmioAI4.png" alt="The Perkins Family featured on a Dolmio billboard after using the Puppetiser tool" class="entry-img" />
+      <p class="entry-img-caption">The Perkins Family, featured on a Dolmio billboard via the Puppetiser</p>
+
+      <p>That is a strong use of AI. It takes a distinctive brand asset that people already have affection for and activates it in a way that is engaging, participatory, and builds fame. Families are sharing their puppetised versions online. A real family ended up on a billboard. The brand gets user-generated content that reinforces its most recognisable codes.</p>
+
+      <p>Compare the two uses of AI side by side. One quietly replaces a food photographer on a jar label. The other brings back a beloved brand character and invites the audience to be part of it. Both are AI. They feel very different.</p>
+
+      <p>I think the moral question on the food imagery is smaller than it first appears. We've been served idealised food photos for decades and nobody has felt cheated by a jar of pasta sauce. But the creative question is bigger. If AI is going to touch every part of how a brand shows up, the brands that use it to activate their distinctive assets, rather than just cut costs, will be the ones people actually remember.</p>
+
+      <p>When'sa your Dolmio day? Apparently, it's today.</p>
+
+    </div>
+
+    <a class="back-link" href="../index.html">Back home</a>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <picture>
+      <source media="(max-width: 720px)" srcset="../images/SJC_section_June26.png" />
+      <img src="../images/SJC_footer_June26.png" alt="stephenjcleary" />
+    </picture>
+  </footer>
+
+</body>
+</html>
