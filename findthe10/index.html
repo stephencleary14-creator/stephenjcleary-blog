@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <base href="/findthe10/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Find The 10 - Sports Brand Consultancy</title>
   <link rel="icon" type="image/png" href="Artwork/Logo/10_crop.png">
@@ -75,6 +74,16 @@
       border-color: rgba(255,255,255,0.85);
       color: var(--red);
       transform: translateY(-2px);
+    }
+    .hero-text-link {
+      color: rgba(255,255,255,0.6);
+      font-family: var(--font);
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.25);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
     }
     .btn:active {
       transform: scale(0.97);
@@ -501,12 +510,10 @@
       padding-left: max(2rem, calc((100vw - 1200px) / 2 + 2rem));
     }
     .about__eyebrow {
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      color: var(--red);
-      text-transform: uppercase;
       display: block;
+      width: 48px;
+      height: 2px;
+      background: var(--red);
       margin-bottom: 2rem;
     }
     .about__opener-heading {
@@ -928,74 +935,30 @@
       }
     }
 
-    /* Testimonials */
-    .testimonials__heading {
-      font-size: 0.82rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
+    /* Testimonial — single static quote */
+    .testimonial-intro {
+      font-size: 1rem;
       color: var(--mid);
-      text-transform: uppercase;
-      margin-bottom: 2rem;
+      line-height: 1.7;
+      margin-bottom: 1.25rem;
     }
-    .carousel {
-      position: relative;
-      overflow: hidden;
+    .testimonial-static {
+      border-left: 2px solid var(--red);
+      padding-left: 1.25rem;
     }
-    .carousel__track {
-      display: flex;
-      transition: transform 320ms cubic-bezier(0.23, 1, 0.32, 1);
-    }
-    .testimonial {
-      min-width: 100%;
-      padding-right: 1rem;
-    }
-    .testimonial__quote {
-      font-size: 1.15rem;
-      font-style: italic;
+    .testimonial-static__quote {
+      font-size: 1.05rem;
       color: var(--dark);
-      line-height: 1.75;
-      margin-bottom: 1.5rem;
-      position: relative;
-      padding-left: 0.5rem;
+      line-height: 1.7;
+      font-weight: 500;
     }
-    .testimonial__quote::before {
-      content: '\201C';
-      position: absolute;
-      top: -1.5rem;
-      left: -0.75rem;
-      font-size: 5rem;
-      color: var(--red);
-      opacity: 0.25;
-      line-height: 1;
-      font-style: normal;
-      font-weight: 700;
-      pointer-events: none;
-    }
-    .testimonial__cite {
-      font-size: 0.83rem;
+    .testimonial-static__cite {
+      display: block;
+      margin-top: 0.75rem;
+      font-size: 0.82rem;
       color: var(--mid);
       font-weight: 600;
       font-style: normal;
-      letter-spacing: 0.03em;
-    }
-    .carousel__dots {
-      display: flex;
-      gap: 0.6rem;
-      margin-top: 2rem;
-    }
-    .carousel__dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: rgba(92,82,71,0.3);
-      border: none;
-      cursor: pointer;
-      transition: background 0.25s, transform 0.25s;
-      padding: 0;
-    }
-    .carousel__dot--active {
-      background: var(--red);
-      transform: scale(1.35);
     }
 
     /* ══════════════════════════════════════════════════════════
@@ -1044,6 +1007,11 @@
         transform: translateY(-2px);
       }
 
+      .hero-text-link:hover {
+        color: #fff;
+        border-color: #fff;
+      }
+
       .footer__nav a:hover { color: var(--cream); }
       .about__link:hover { color: #e8274a; }
     }
@@ -1088,10 +1056,10 @@
     }
     .hero-mobile__ctas {
       display: flex;
-      gap: 0.75rem;
+      gap: 1rem;
+      align-items: center;
     }
     .hero-mobile__ctas .btn {
-      flex: 1;
       text-align: center;
       white-space: nowrap;
     }
@@ -1159,22 +1127,11 @@
 
     /* Panel 1: What is it */
     .about-mobile__eyebrow {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
-    }
-    .about-mobile__eyebrow-line {
-      flex: 1;
-      height: 1px;
+      display: block;
+      width: 48px;
+      height: 2px;
       background: var(--red);
-    }
-    .about-mobile__label {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--red);
+      margin-bottom: 1rem;
     }
     .about-mobile__logo {
       height: 52px;
@@ -1243,6 +1200,25 @@
       transition: border-color 0.2s;
     }
     .about-mobile__link:hover { border-color: var(--red); }
+
+    /* ══ BREATHER STRIP ═══════════════════════════════════════ */
+    .breather {
+      padding: 1.25rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .breather--dark {
+      background: var(--dark);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .breather__line {
+      width: 48px;
+      height: 2px;
+      background: var(--red);
+      opacity: 0.3;
+      border-radius: 1px;
+    }
 
     /* ══ AUDIENCE SECTION ══════════════════════════════════════ */
     .audience {
@@ -1665,18 +1641,131 @@
 
     /* ── AI strip responsive ──────────────────────────────────── */
     @media (max-width: 900px) {
-      .ai-strip { padding: 3.5rem 1.5rem; }
+      /* Hide desktop grid layout */
+      .ai-strip__inner { display: none; }
 
-      .ai-strip__inner {
-        grid-template-columns: 1fr;
-        gap: 2rem;
+      .ai-strip { padding: 0; }
+
+      /* Show mobile-only layout */
+      .ai-strip__mobile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 3rem 1.5rem;
       }
 
-      .ai-strip__connector { display: none; }
+      /* Two inputs side by side */
+      .ai-strip__mobile-inputs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        width: 100%;
+        margin-bottom: 0;
+      }
+      .ai-strip__mobile-input {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 0.75rem;
+        padding: 1.25rem 0.75rem;
+        border: 1px solid rgba(237,224,196,0.1);
+        border-radius: 8px;
+        background: rgba(237,224,196,0.03);
+      }
+      .ai-strip__mobile-input-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .ai-strip__mobile-input-icon--exp {
+        background: rgba(237,224,196,0.08);
+        border: 1.5px solid rgba(237,224,196,0.15);
+      }
+      .ai-strip__mobile-input-icon--ai {
+        background: var(--red);
+        box-shadow: 0 0 16px rgba(200,16,46,0.35);
+      }
+      .ai-strip__mobile-input-label {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--cream);
+        line-height: 1.3;
+      }
+      .ai-strip__mobile-input-sub {
+        font-size: 0.72rem;
+        color: rgba(237,224,196,0.4);
+        font-weight: 600;
+        line-height: 1.4;
+      }
 
-      .ai-node { flex-direction: row; }
+      /* Merge line: two lines converging to a dot */
+      .ai-strip__mobile-merge {
+        position: relative;
+        width: 100%;
+        height: 48px;
+        margin-bottom: 0;
+      }
+      .ai-strip__mobile-merge svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
 
-      .ai-strip__card { flex-direction: column; gap: 0.4rem; }
+      /* Output cards */
+      .ai-strip__mobile-outputs {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .ai-strip__mobile-card {
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
+        gap: 1rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(237,224,196,0.08);
+      }
+      .ai-strip__mobile-card:last-child {
+        border-bottom: none;
+      }
+      .ai-strip__mobile-card-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--red);
+        flex-shrink: 0;
+        margin-top: 0.4rem;
+        align-self: flex-start;
+      }
+      .ai-strip__mobile-card-label {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--cream);
+        min-width: 5.5rem;
+        flex-shrink: 0;
+      }
+      .ai-strip__mobile-card-services {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.1rem 0.5rem;
+      }
+      .ai-strip__mobile-card-services span {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--cream);
+        opacity: 0.45;
+        line-height: 1.5;
+      }
+    }
+    /* Desktop: hide mobile layout */
+    @media (min-width: 901px) {
+      .ai-strip__mobile { display: none; }
     }
   </style>
 </head>
@@ -1732,7 +1821,7 @@
           <p class="hero__tagline">Elite brand building<br class="desktop-br"> for sport.</p>
           <div class="hero__ctas">
             <a href="#about" class="btn btn--red">Find out how</a>
-            <a href="#contact" class="btn btn--outline-light">Work with me</a>
+            <a href="#contact" class="hero-text-link">or get in touch</a>
           </div>
         </div>
       </div>
@@ -1749,7 +1838,7 @@
           <p class="hero-mobile__tagline">Elite brand building<br>for sport.</p>
           <div class="hero-mobile__ctas">
             <a href="#about-mobile-anchor" class="btn btn--red">Find out how</a>
-            <a href="#contact" class="btn btn--outline-light">Work with me</a>
+            <a href="#contact" class="hero-text-link">or get in touch</a>
           </div>
         </div>
       </div>
@@ -1826,7 +1915,7 @@
           <div class="about-panel about-panel--mobile-copy">
             <div class="container">
               <p class="about__body">The number 10. The most creative player on the pitch, the one who turns possession into goals.</p>
-              <p class="about__body">When you build your game plan to <span style="color: var(--red);">Find The 10</span>, you're more likely to be effective. More likely to win.</p>
+              <p class="about__body">When you build your game plan to <span style="color: var(--red);">Find The 10</span>, you don't just compete. You win.</p>
             </div>
           </div>
 
@@ -1861,7 +1950,7 @@
                   <h2 class="about__heading about__heading--sol" id="p2-heading">In football, there's a position that changes everything.</h2>
                   <div class="about__body-wrap">
                     <p class="about__body" id="p2-body1">The number 10. The most creative player on the pitch, the one who turns possession into goals.</p>
-                    <p class="about__body" id="p2-body2">When you build your game plan to <span style="color: var(--red);">Find The 10</span>, you're more likely to be effective. More likely to win.</p>
+                    <p class="about__body" id="p2-body2">When you build your game plan to <span style="color: var(--red);">Find The 10</span>, you don't just compete. You win.</p>
                   </div>
                 </div>
 
@@ -1928,10 +2017,7 @@
       <!-- Panel 1: What is Find The 10? -->
       <div class="about-mobile__panel">
         <div class="container">
-          <div class="about-mobile__eyebrow">
-            <span class="about-mobile__label">What is Find The 10?</span>
-            <div class="about-mobile__eyebrow-line"></div>
-          </div>
+          <div class="about-mobile__eyebrow" aria-hidden="true"></div>
           <h2 class="about-mobile__heading">In football, there's a position that changes everything.</h2>
           <p class="about-mobile__body">The number 10. The most creative player on the pitch, the one who turns possession into goals.</p>
           <div class="about-mobile__tactics">
@@ -1964,7 +2050,7 @@
               <div class="chip chip--grey chip--st"></div>
             </div>
           </div>
-          <p class="about-mobile__body">When you build your game plan to <span>Find The 10</span>, you're more likely to be effective. More likely to win.</p>
+          <p class="about-mobile__body">When you build your game plan to <span>Find The 10</span>, you don't just compete. You win.</p>
         </div>
       </div>
 
@@ -1979,6 +2065,11 @@
       </div>
 
     </section>
+
+    <!-- ══ BREATHER ═══════════════════════════════════════════════ -->
+    <div class="breather breather--dark" aria-hidden="true">
+      <div class="breather__line"></div>
+    </div>
 
     <!-- ══ AUDIENCE ═══════════════════════════════════════════════ -->
     <section class="audience">
@@ -2095,6 +2186,11 @@
       </div>
     </section>
 
+    <!-- ══ BREATHER ═══════════════════════════════════════════════ -->
+    <div class="breather" style="background: var(--cream-light); border-top: 1px solid var(--cream);" aria-hidden="true">
+      <div class="breather__line"></div>
+    </div>
+
     <!-- ══ AI WORKFLOW STRIP ═══════════════════════════════════════ -->
     <section class="ai-strip">
       <div class="ai-strip__inner">
@@ -2173,6 +2269,73 @@
         </div>
 
       </div>
+
+      <!-- Mobile layout: two inputs merging into outputs -->
+      <div class="ai-strip__mobile">
+
+        <!-- Two input boxes side by side -->
+        <div class="ai-strip__mobile-inputs">
+          <div class="ai-strip__mobile-input">
+            <div class="ai-strip__mobile-input-icon ai-strip__mobile-input-icon--exp">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="8" r="4" stroke="#EDE0C4" stroke-width="2"/>
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#EDE0C4" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="ai-strip__mobile-input-label">15+ years brand management experience</p>
+          </div>
+          <div class="ai-strip__mobile-input">
+            <div class="ai-strip__mobile-input-icon ai-strip__mobile-input-icon--ai">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <polygon points="14,2 6,14 12,14 10,22 18,10 12,10" fill="#F7F2EA"/>
+              </svg>
+            </div>
+            <p class="ai-strip__mobile-input-label">Custom-built AI workflows</p>
+          </div>
+        </div>
+
+        <!-- Merge lines converging to a point -->
+        <div class="ai-strip__mobile-merge" aria-hidden="true">
+          <svg viewBox="0 0 200 48" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="50" y1="0" x2="100" y2="40" stroke="rgba(237,224,196,0.12)" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="150" y1="0" x2="100" y2="40" stroke="rgba(237,224,196,0.12)" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="100" cy="42" r="4" fill="#C8102E"/>
+          </svg>
+        </div>
+
+        <!-- Output cards -->
+        <div class="ai-strip__mobile-outputs">
+          <div class="ai-strip__mobile-card">
+            <div class="ai-strip__mobile-card-dot"></div>
+            <div class="ai-strip__mobile-card-label">Research</div>
+            <div class="ai-strip__mobile-card-services">
+              <span>Audience Insights</span>
+              <span>Social Listening</span>
+              <span>Brand Health</span>
+            </div>
+          </div>
+          <div class="ai-strip__mobile-card">
+            <div class="ai-strip__mobile-card-dot"></div>
+            <div class="ai-strip__mobile-card-label">Strategy</div>
+            <div class="ai-strip__mobile-card-services">
+              <span>Brand Planning</span>
+              <span>Brand Identity</span>
+              <span>Positioning</span>
+            </div>
+          </div>
+          <div class="ai-strip__mobile-card">
+            <div class="ai-strip__mobile-card-dot"></div>
+            <div class="ai-strip__mobile-card-label">Execution</div>
+            <div class="ai-strip__mobile-card-services">
+              <span>Social Media</span>
+              <span>Sponsorship</span>
+              <span>CRM</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
     </section>
 
     <!-- ══ DISCOVERY BRIDGE ══════════════════════════════════════ -->
@@ -2214,39 +2377,12 @@
             </form>
           </div>
 
-          <!-- Testimonials -->
+          <!-- Testimonial -->
           <div class="contact__testimonials">
-            <p class="testimonials__heading">Testimonials</p>
-            <div class="carousel" role="region" aria-label="Testimonials" aria-live="polite">
-              <div class="carousel__track">
-
-                <div class="testimonial">
-                  <blockquote class="testimonial__quote">
-                    "Placeholder — a client testimonial will appear here. Warm, specific, honest."
-                  </blockquote>
-                  <cite class="testimonial__cite">Name, Company</cite>
-                </div>
-
-                <div class="testimonial">
-                  <blockquote class="testimonial__quote">
-                    "Another testimonial placeholder. Short, direct, real. Something that makes the next person want to pick up the phone."
-                  </blockquote>
-                  <cite class="testimonial__cite">Name, Company</cite>
-                </div>
-
-                <div class="testimonial">
-                  <blockquote class="testimonial__quote">
-                    "Third testimonial placeholder. Three is a good number. The right one to close on."
-                  </blockquote>
-                  <cite class="testimonial__cite">Name, Company</cite>
-                </div>
-
-              </div>
-              <div class="carousel__dots" aria-hidden="true">
-                <button class="carousel__dot carousel__dot--active" data-index="0" aria-label="Testimonial 1"></button>
-                <button class="carousel__dot" data-index="1" aria-label="Testimonial 2"></button>
-                <button class="carousel__dot" data-index="2" aria-label="Testimonial 3"></button>
-              </div>
+            <p class="testimonial-intro">Here's what a recent client had to say:</p>
+            <div class="testimonial-static">
+              <p class="testimonial-static__quote">Placeholder — a client testimonial will appear here. Warm, specific, honest.</p>
+              <cite class="testimonial-static__cite">Name, Company</cite>
             </div>
           </div>
 
@@ -2506,43 +2642,6 @@
       }
     }());
 
-
-    // ── Testimonial carousel ─────────────────────────────────
-    const track = document.querySelector('.carousel__track');
-    const dots = document.querySelectorAll('.carousel__dot');
-    const totalSlides = document.querySelectorAll('.testimonial').length;
-    let current = 0;
-    let timer;
-
-    function goTo(index) {
-      current = (index + totalSlides) % totalSlides;
-      track.style.transform = `translateX(-${current * 100}%)`;
-      dots.forEach((dot, i) => {
-        dot.classList.toggle('carousel__dot--active', i === current);
-      });
-    }
-
-    function startAutoplay() {
-      timer = setInterval(() => goTo(current + 1), 5000);
-    }
-
-    function stopAutoplay() {
-      clearInterval(timer);
-    }
-
-    dots.forEach(dot => {
-      dot.addEventListener('click', () => {
-        stopAutoplay();
-        goTo(parseInt(dot.dataset.index));
-        startAutoplay();
-      });
-    });
-
-    const carousel = document.querySelector('.carousel');
-    carousel.addEventListener('mouseenter', stopAutoplay);
-    carousel.addEventListener('mouseleave', startAutoplay);
-
-    startAutoplay();
 
     // ── Contact form submit morph ────────────────────────────
     (function () {
