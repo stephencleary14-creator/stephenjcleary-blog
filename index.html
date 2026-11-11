@@ -47,7 +47,7 @@
 
     /* ── Nav ── */
     nav {
-      background: transparent;
+      background: linear-gradient(to bottom, rgba(28,28,28,0.5) 0%, transparent 100%);
       padding: 0 32px;
       display: flex;
       align-items: center;
@@ -58,6 +58,13 @@
       left: 0;
       right: 0;
       z-index: 100;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    nav.scrolled {
+      position: fixed;
+      background: var(--dark);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
 
     .nav-search {
@@ -167,99 +174,86 @@
       text-align: center;
     }
 
-    /* ── Hero (header + bio share positioned wrapper) ── */
-    .hero {
+    /* ── Hero Scene ── */
+    .hero-scene {
       position: relative;
-    }
-
-    /* ── Hero: split panel — text left, video right ── */
-    .hero-outer {
+      width: 100%;
+      height: min(100vh, 56.25vw);
+      height: min(100dvh, 56.25vw);
+      overflow: hidden;
       background: var(--dark);
       border-bottom: 3px solid var(--red);
-      position: relative;
-      overflow: hidden;
     }
 
-    .hero-outer::before {
-      content: '';
+    .hero-bg {
       position: absolute;
       inset: 0;
-      background-image: radial-gradient(circle, rgba(200,16,46,0.18) 1px, transparent 1px);
-      background-size: 22px 22px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      max-width: 960px;
-      margin: 0 auto;
-      position: relative;
       z-index: 1;
     }
+    .hero-bg img,
+    .hero-bg video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 70%;
+    }
+    .hero-video-mobile { display: none; }
 
-    .hero-text {
-      position: relative;
-      z-index: 1;
-      padding: 76px 40px 40px 32px;
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 clamp(32px, 6vw, 80px);
     }
 
-    .page-title {
-      font-size: clamp(28px, 5vw, 42px);
+    .hero-wordmark {
+      font-family: var(--font);
+      font-size: clamp(34px, 6.4vw, 77px);
       font-weight: 700;
       color: var(--cream-light);
       letter-spacing: -0.02em;
+      text-shadow:
+        0 2px 8px rgba(0,0,0,0.35),
+        0 4px 24px rgba(0,0,0,0.25),
+        0 1px 2px rgba(0,0,0,0.4);
       line-height: 1.1;
-      text-shadow: 0 2px 14px rgba(0,0,0,0.45);
-      margin-bottom: 16px;
     }
+    .hero-j { color: var(--red); }
 
-    .bio-line {
-      font-size: 15px;
-      color: rgba(237,224,196,0.65);
-      line-height: 1.6;
-      max-width: 420px;
-      margin-bottom: 16px;
-    }
-
-    .bio-linkedin {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+    .hero-cta {
+      display: inline-block;
+      align-self: flex-start;
+      margin-top: 16px;
+      padding: 10px 32px;
+      background: var(--red);
+      color: #ffffff;
+      font-family: var(--font);
       font-size: 13px;
       font-weight: 600;
-      color: var(--red);
+      letter-spacing: 0.1em;
       text-decoration: none;
-      transition: color 0.15s;
+      border-radius: 4px;
+      transition: background 0.15s;
     }
-    .bio-linkedin:hover { color: var(--red-deep); }
-    .bio-linkedin::after { content: '→'; }
-
-    .hero-video {
-      position: relative;
-      overflow: hidden;
-      margin-left: -40px;
-      margin-right: 32px;
+    .hero-cta:hover {
+      background: var(--red-deep);
     }
 
-    .hero-video video {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      object-position: center 75%;
-    }
-
-    .hero-video::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(to right, var(--dark) 0%, rgba(28,28,28,0.3) 10%, transparent 25%),
-        linear-gradient(to left,  var(--dark) 0%, rgba(28,28,28,0.3) 10%, transparent 25%);
-      z-index: 2;
-      pointer-events: none;
+    .hero-tagline {
+      font-family: var(--font);
+      font-size: clamp(13px, 1.8vw, 18px);
+      font-weight: 500;
+      color: #ffffff;
+      margin-top: 4px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.3);
     }
 
     /* Hide old elements */
@@ -269,9 +263,9 @@
 
     /* ── Layout ── */
     .container {
-      max-width: 960px;
+      max-width: 100%;
       margin: 0 auto;
-      padding: 0 32px 0;
+      padding: 0 clamp(32px, 6vw, 80px);
     }
 
     section {
@@ -792,22 +786,20 @@
       }
 
       .featured-image {
-        height: 80px;
+        height: 200px;
         min-height: 0;
-        background: var(--cream);
+        background: var(--dark);
         display: flex;
         align-items: center;
         justify-content: center;
       }
 
       .featured-image img {
-        display: none;
+        display: block;
       }
 
       .featured-image .thumb-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: none;
         width: 100%;
         height: 100%;
       }
@@ -851,59 +843,34 @@
       }
 
       .container {
-        padding: 0 20px 0;
+        padding: 0 24px;
       }
 
       nav {
         padding: 0 20px;
       }
 
-      /* Mobile: 3-row grid — title / video / bio */
-      .hero-grid {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto;
+      .hero-scene {
+        height: 100vh;
+        height: 100dvh;
       }
 
-      .hero-text {
-        display: contents; /* lets children participate in grid directly */
+      .hero-video-desktop { display: none; }
+      .hero-video-mobile { display: block; }
+
+      .hero-overlay {
+        justify-content: flex-start;
+        padding: clamp(24px, 5vh, 40px) 24px 0;
+        align-items: center;
+        text-align: center;
       }
 
-      .hero-title {
-        order: 1;
-        padding: 72px 20px 16px;
+      .hero-wordmark {
+        font-size: clamp(36px, 10vw, 56px);
       }
 
-      .hero-video {
-        order: 2;
-        height: 220px;
-        margin-left: 0;
-        margin-right: 0;
-      }
-
-      /* No gradient on mobile */
-      .hero-video::before {
-        display: none;
-      }
-
-      .hero-bio {
-        order: 3;
-        padding: 16px 20px 28px;
-      }
-
-      .mobile-bio-text {
-        padding-top: 4px;
-      }
-
-      .mobile-bio-text p {
-        font-size: 13px;
-        color: var(--mid);
-        line-height: 1.6;
-      }
-
-      .page-subtitle {
-        font-size: clamp(13px, 3.5vw, 15px);
-        white-space: nowrap;
-      }
+      .hero-cta { display: none; }
+      .nav-search { display: none; }
 
       .entry-header {
         padding: 28px 24px 24px;
@@ -939,34 +906,28 @@
     </div>
   </nav>
 
-  <!-- Hero: split panel — text left, video right -->
-  <div class="hero-outer">
-  <div class="hero-grid">
-
-    <div class="hero-text">
-      <div class="hero-title">
-        <h1 class="page-title">stephen<span style="color:var(--red);">j</span>cleary</h1>
-      </div>
-      <div class="hero-bio">
-        <p class="bio-line">Brand marketer with 14+ years experience. Global brand marketing at adidas Football, currently a brand manager at The National Lottery in Dublin. This blog is a record of what I'm building, learning, and figuring out along the way.</p>
-        <a class="bio-linkedin" href="https://www.linkedin.com/in/clearystephen/" target="_blank" rel="noopener">Connect on LinkedIn</a>
-      </div>
-    </div>
-
-    <div class="hero-video">
-      <video autoplay muted loop playsinline preload="auto">
-        <source src="images/header_vid.mp4" type="video/mp4">
+  <!-- Hero Scene -->
+  <div class="hero-scene" id="hero-scene">
+    <div class="hero-bg">
+      <video autoplay muted playsinline preload="auto" poster="images/Figurine Position Adjustment2.jpg" class="hero-video-desktop">
+        <source src="images/hand-header.mp4" type="video/mp4" />
+      </video>
+      <video autoplay muted playsinline preload="auto" class="hero-video-mobile">
+        <source src="images/hand-header_mobile.mp4" type="video/mp4" />
       </video>
     </div>
-
-  </div>
+    <div class="hero-overlay">
+      <h1 class="hero-wordmark">stephen<span class="hero-j">j</span>cleary</h1>
+      <p class="hero-tagline">Brand marketing and AI builds</p>
+      <a href="#latest" class="hero-cta">LATEST POST</a>
+    </div>
   </div>
 
   <!-- Main Content -->
   <div class="container">
 
     <!-- Latest -->
-    <section>
+    <section id="latest">
       <p class="section-label">Latest</p>
       <div class="card featured-card" id="featured-card">
         <div id="featured-thumb" class="featured-image">
@@ -2671,6 +2632,18 @@
     document.addEventListener('click', function(e) {
       if (!e.target.closest('.nav-search')) closeSearch();
     });
+
+    // Nav: sticky transition after scrolling past hero
+    (function() {
+      var heroScene = document.getElementById('hero-scene');
+      var nav = document.querySelector('nav');
+      if (!heroScene || !nav) return;
+
+      var observer = new IntersectionObserver(function(entries) {
+        nav.classList.toggle('scrolled', !entries[0].isIntersecting);
+      }, { threshold: 0 });
+      observer.observe(heroScene);
+    })();
   </script>
 
 </body>
