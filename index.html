@@ -912,7 +912,7 @@
       <video autoplay muted playsinline preload="auto" poster="images/Figurine Position Adjustment2.jpg" class="hero-video-desktop">
         <source src="images/hand-header.mp4" type="video/mp4" />
       </video>
-      <video autoplay muted playsinline preload="auto" class="hero-video-mobile">
+      <video autoplay muted playsinline preload="auto" poster="images/Figurine Position Adjustment2.jpg" class="hero-video-mobile">
         <source src="images/hand-header-mobile2.mp4" type="video/mp4" />
       </video>
     </div>
@@ -2631,6 +2631,11 @@
 
     document.addEventListener('click', function(e) {
       if (!e.target.closest('.nav-search')) closeSearch();
+    });
+
+    // Ensure hero videos autoplay (mobile browsers block play on display:none elements)
+    document.querySelectorAll('.hero-bg video').forEach(function(v) {
+      v.play().catch(function() {});
     });
 
     // Nav: sticky transition after scrolling past hero
