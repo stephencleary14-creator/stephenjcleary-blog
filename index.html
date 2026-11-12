@@ -197,7 +197,6 @@
       object-fit: cover;
       object-position: center 70%;
     }
-    .hero-video-mobile { display: none; }
 
     .hero-overlay {
       position: absolute;
@@ -855,9 +854,6 @@
         height: 100dvh;
       }
 
-      .hero-video-desktop { display: none; }
-      .hero-video-mobile { display: block; }
-
       .hero-overlay {
         justify-content: flex-start;
         padding: clamp(16px, 3vh, 28px) 24px 0;
@@ -909,11 +905,8 @@
   <!-- Hero Scene -->
   <div class="hero-scene" id="hero-scene">
     <div class="hero-bg">
-      <video autoplay muted playsinline preload="auto" poster="images/Figurine Position Adjustment2.jpg" class="hero-video-desktop">
-        <source src="images/hand-header.mp4" type="video/mp4" />
-      </video>
-      <video autoplay muted playsinline preload="auto" poster="images/Figurine Position Adjustment2.jpg" class="hero-video-mobile">
-        <source src="images/hand-header-mobile2-silent.mp4" type="video/mp4" />
+      <video id="hero-video" autoplay muted playsinline preload="auto" poster="images/Figurine Position Adjustment2.jpg">
+        <source src="" type="video/mp4" />
       </video>
     </div>
     <div class="hero-overlay">
@@ -2633,10 +2626,16 @@
       if (!e.target.closest('.nav-search')) closeSearch();
     });
 
-    // Ensure hero videos autoplay (mobile browsers block play on display:none elements)
-    document.querySelectorAll('.hero-bg video').forEach(function(v) {
-      v.play().catch(function() {});
-    });
+    // Hero video: pick desktop or mobile source based on viewport width
+    (function() {
+      var video = document.getElementById('hero-video');
+      if (!video) return;
+      var isMobile = window.innerWidth <= 720;
+      var src = isMobile ? 'images/hand-header-mobile2-silent.mp4' : 'images/hand-header.mp4';
+      video.querySelector('source').src = src;
+      video.load();
+      video.play().catch(function() {});
+    })();
 
     // Nav: sticky transition after scrolling past hero
     (function() {
